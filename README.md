@@ -17,7 +17,7 @@ AAD helps you see whether your Claude Code and Codex setup files are aligned acr
 ## Install as a Claude Code plugin
 
 ```bash
-/plugin marketplace add <owner>/<repo>
+/plugin marketplace add yechan-9208/agent-dashboard
 /plugin install aad@aad
 /aad:serve
 ```
