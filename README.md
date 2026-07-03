@@ -11,7 +11,6 @@ AAD helps you see whether your Claude Code and Codex setup files are aligned acr
 - Compares items across tools and folders with a matrix view.
 - Syncs through a two-step flow: preview diff → explicit apply.
 - Keeps backups before writes.
-- Guards real filesystem access behind `AAD_ALLOW_REAL=1`.
 - Ignores known secret/session/database paths by denylist.
 
 ## Install as a Claude Code plugin
