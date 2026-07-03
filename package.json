@@ -1,19 +1,17 @@
 {
-  "name": "agent-dashboard",
-  "version": "1.0.0",
-  "description": "Local dashboard for syncing Claude Code and OpenAI Codex skills, agents, and instructions.",
-  "license": "MIT",
+  "name": "ai-agent-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "로컬 전용 AI 에이전트 설정 동기화 대시보드 (Claude·Codex 2모델)",
+  "license": "UNLICENSED",
   "type": "commonjs",
   "bin": {
     "aad": "bin/aad.js"
   },
   "scripts": {
-    "serve": "node bin/aad.js serve",
-    "serve:real": "AAD_ALLOW_REAL=1 AAD_MODE=real node bin/aad.js serve",
-    "demo": "node bin/aad.js",
-    "demo:serve": "node bin/aad.js serve"
+    "serve": "node bin/aad.js serve"
   },
-  "_comment": "Claude Code plugin + local CLI/server. Runtime dependencies are installed into Claude plugin data by scripts/plugin-serve.sh.",
+  "_comment": "의존성은 파서 2개(gray-matter, @iarna/toml)만 — 나머지는 Node 내장 모듈. 항상 실제 파일 기준(D37, 더미/데모 모드 제거).",
   "dependencies": {
     "@iarna/toml": "^2.2.5",
     "gray-matter": "^4.0.3"

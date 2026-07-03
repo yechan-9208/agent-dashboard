@@ -1,32 +1,23 @@
-# dependencies
+# 의존성
 node_modules/
 
-# runtime/local data
+# 로컬 전용 중앙 저장소(자체 git, D5) — 상위 저장소에 넣지 않음
 canonical/
+
+# 실행 시 생성되는 데이터
 backups/
-.dummy/
 catalog/cache/
-*.log
-*.pid
 
-# local app/editor artifacts
+# 스크래치 아티팩트(skills.sh 페이지 스냅샷 등)
+detail.html
+
+# 앱을 이 repo에 스스로 실행/동기화할 때 생기는 산출물(소스 아님)
+.codex/
+AGENTS.md
+GEMINI.md
+
+# 세션 익스포트에 딸려오는 앱 진단 로그(이 프로젝트 대화 아님) — 커밋 금지
+**/dev_log/**/logs/
+
+# macOS
 .DS_Store
-/.hermes/
-/.claude/
-/.codex/
-/AGENTS.md
-/CLAUDE.md
-/GEMINI.md
-
-# env/secrets
-.env
-.env.*
-*.key
-*.pem
-*.sqlite
-*.sqlite-shm
-*.sqlite-wal
-
-# generated / archives not for public release
-docs/archive/
-*.pptx

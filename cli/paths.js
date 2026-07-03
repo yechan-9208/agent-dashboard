@@ -1,13 +1,11 @@
 'use strict';
 // 두 도구(claude·codex)의 설정 홈 경로와 동기화 대상 위치를 정의한다.
 // (과거 gemini도 지원했으나 사용자 결정으로 전면 제거 — 2모델 체제.)
-// 배포본은 안전 기본값을 유지한다:
-//  - dummy : bundled fixtures only (no real files)
-//  - real  : actual ~/.claude, ~/.codex, ~/.agents, gated by AAD_ALLOW_REAL=1
+// 항상 실제 파일 기준으로 동작한다(더미/데모 모드는 D37로 제거).
+// 격리 테스트가 필요하면 AAD_CANONICAL/AAD_BACKUPS 환경변수로 저장 위치만 바꾼다.
 
 const os = require('os');
 const path = require('path');
-const mode = require('./mode');
 
 const PROJECT = path.join(__dirname, '..');
 
@@ -15,19 +13,8 @@ function home() {
   return os.homedir();
 }
 
-function fixturesRoot() {
-  return process.env.AAD_FIXTURES || path.join(PROJECT, 'fixtures');
-}
-
-// 각 도구의 설정 홈 디렉토리 (모드에 따라 fixtures vs 실제 홈)
+// 각 도구의 설정 홈 디렉토리
 function toolHomes() {
-  if (mode.getMode() === 'dummy') {
-    const f = fixturesRoot();
-    return {
-      claude: path.join(f, 'claude'),
-      codex: path.join(f, 'codex'),
-    };
-  }
   return {
     claude: path.join(home(), '.claude'),
     codex: path.join(home(), '.codex'),
@@ -63,7 +50,7 @@ function agentPath(tool, name) {
 //  - .agents/skills = 여러 도구가 공유하는 cross-tool 표준 위치(에이전트 소속 아님)
 //  - ~/.codex/skills = 공식 문서엔 없는 비공식 위치(실재) → official:false로 표시
 function agentsHome() {
-  return mode.getMode() === 'dummy' ? path.join(fixturesRoot(), 'agents') : path.join(home(), '.agents');
+  return path.join(home(), '.agents');
 }
 
 // 스캔할 skill 소스 목록. official=false면 사용자에게 "비공식"으로 알린다.
@@ -85,20 +72,14 @@ function skillTargetDir(tool) {
   throw new Error('알 수 없는 도구: ' + tool);
 }
 
-// canonical 저장소 위치. 모드별로 분리해 더미와 실제 데이터가 섞이지 않게 한다.
+// canonical 저장소 위치 (프로젝트 안 — D5). AAD_CANONICAL로 격리 테스트 가능.
 function canonicalRoot() {
-  if (process.env.AAD_CANONICAL) return process.env.AAD_CANONICAL;
-  return mode.getMode() === 'dummy'
-    ? path.join(PROJECT, '.dummy', 'canonical')
-    : path.join(PROJECT, 'canonical');
+  return process.env.AAD_CANONICAL || path.join(PROJECT, 'canonical');
 }
 
-// 배포본 덮어쓰기 전 백업을 모아둘 폴더. 모드별로 분리한다.
+// 배포본 덮어쓰기 전 백업을 모아둘 폴더. AAD_BACKUPS로 격리 테스트 가능.
 function backupRoot() {
-  if (process.env.AAD_BACKUPS) return process.env.AAD_BACKUPS;
-  return mode.getMode() === 'dummy'
-    ? path.join(PROJECT, '.dummy', 'backups')
-    : path.join(PROJECT, 'backups');
+  return process.env.AAD_BACKUPS || path.join(PROJECT, 'backups');
 }
 
 // 번들 정적 카탈로그(스토어). 모드 무관 — 실제 사용자 데이터가 아니라 프로젝트에 포함된
@@ -112,7 +93,7 @@ function catalogPath() {
 // 근거: docs/verification/project-scope-verification.md (0번 검증 — 공식 문서 확인 완료).
 
 // 등록된 프로젝트 목록(projects.json) 저장 위치.
-// canonicalRoot()가 이미 모드별(.dummy/canonical vs canonical)로 분리돼 있다.
+// canonicalRoot() 아래에 둔다(AAD_CANONICAL 오버라이드 시 자동 격리).
 function projectsFile() {
   return path.join(canonicalRoot(), 'projects.json');
 }
@@ -146,11 +127,9 @@ function projectInstructionPaths(root) {
   };
 }
 
-// "최초 1회" 프로젝트 스캔의 기본 루트.
-//  - dummy: fixtures/projects
-//  - real : 사용자 홈 디렉토리
+// "최초 1회" 프로젝트 스캔의 기본 루트 = 사용자 홈 디렉토리.
 function projectScanDefaultRoot() {
-  return mode.getMode() === 'dummy' ? path.join(fixturesRoot(), 'projects') : home();
+  return home();
 }
 
 // ─── 원격 레지스트리 (스토어-R1) ───

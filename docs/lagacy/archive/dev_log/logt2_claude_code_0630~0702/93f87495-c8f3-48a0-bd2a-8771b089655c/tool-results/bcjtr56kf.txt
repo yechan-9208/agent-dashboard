@@ -1,0 +1,228 @@
+[main e7d8b14] dev-log: 세션 로그 아카이브 재정리 (logt2 → session-export)
+ 225 files changed, 9824 insertions(+), 24367 deletions(-)
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a079a7029e0fc845c.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a079a7029e0fc845c.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a231bf67587922eb9.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a231bf67587922eb9.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a26ac19854d5ab25c.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a26ac19854d5ab25c.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a2c6f1e34ab7e75ab.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a2c6f1e34ab7e75ab.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a30f2e52f517176d6.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a30f2e52f517176d6.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a3282867f5e9e184c.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a3282867f5e9e184c.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a358e8c17a10beb16.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a358e8c17a10beb16.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a364e32eafd39cde8.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a364e32eafd39cde8.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a397aaacdf69d18bc.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a397aaacdf69d18bc.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a3c69ef04b81114bc.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a3c69ef04b81114bc.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a3e96f58356f756c6.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a3e96f58356f756c6.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a4c7f962994462cd0.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a4c7f962994462cd0.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a53f64f381db7c0fa.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a53f64f381db7c0fa.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a585293f805ccd824.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a585293f805ccd824.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a596b733c476d3893.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a596b733c476d3893.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a5bf2038b8de0494f.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a5bf2038b8de0494f.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a5c92c94a475efc89.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a5c92c94a475efc89.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a5c98142b22b47868.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a5c98142b22b47868.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a60c95e2140527654.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a60c95e2140527654.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a643e5e8744765c8d.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a643e5e8744765c8d.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a67362c2d5a33e1ca.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a67362c2d5a33e1ca.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a67d7fe980eb2041f.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a67d7fe980eb2041f.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a6a2b6306c4f4e4a0.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a6a2b6306c4f4e4a0.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a6ac891bb9f9e2143.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a6ac891bb9f9e2143.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a704807a1a3513666.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a704807a1a3513666.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a7231b153d6280904.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a7231b153d6280904.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a76bae3ea26185ec8.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a76bae3ea26185ec8.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a779756d10a253a7f.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a779756d10a253a7f.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a8493f73e4ab9f3f0.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a8493f73e4ab9f3f0.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a87db4215cf385fe7.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a87db4215cf385fe7.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a8f026ce5ab4baaa4.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a8f026ce5ab4baaa4.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a91ca61808c25ca3f.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a91ca61808c25ca3f.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a971e5fcc55145e9d.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a971e5fcc55145e9d.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a9811c16a90fdea1f.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a9811c16a90fdea1f.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a98897eff4b5615e8.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a98897eff4b5615e8.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a9d85a375bc03ab3d.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a9d85a375bc03ab3d.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a9deb7e03780db15f.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-a9deb7e03780db15f.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-aa6745550f9db2978.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-aa6745550f9db2978.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-aaca5b09e3536e9f4.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-aaca5b09e3536e9f4.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-aaf4857f23564d013.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-aaf4857f23564d013.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ab3d3ebcc3b9dbcb9.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ab3d3ebcc3b9dbcb9.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ab5df98dc572e978a.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ab5df98dc572e978a.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-abadf60a71deb0b9c.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-abadf60a71deb0b9c.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-abd441e30d58cb143.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-abd441e30d58cb143.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ac36624df0baedea7.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ac36624df0baedea7.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ac8538dfaca175ed4.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ac8538dfaca175ed4.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-acbb9032c1817c95e.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-acbb9032c1817c95e.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ad405173499ed6dcc.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ad405173499ed6dcc.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ad5ec63d659e35cb7.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ad5ec63d659e35cb7.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ad62445771df857e4.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ad62445771df857e4.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ae28c9d7ff9c290d9.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ae28c9d7ff9c290d9.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ae3dd0b09fd3d026d.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ae3dd0b09fd3d026d.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ae48e56eca49728d3.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ae48e56eca49728d3.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ae793629fa1cb1795.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ae793629fa1cb1795.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ae7cfcfb1ae2d6417.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-ae7cfcfb1ae2d6417.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-aea739c043e7bc45b.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-aea739c043e7bc45b.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-af1b65f8c64ecbd4b.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-af1b65f8c64ecbd4b.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-af50721d0bd5a2a89.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-af50721d0bd5a2a89.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-af5b1302c31760ae6.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-af5b1302c31760ae6.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-afe6894cabd8d70cb.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/agent-afe6894cabd8d70cb.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_42735c5a-25f/agent-a0a0ff659925fc38e.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_42735c5a-25f/agent-a0a0ff659925fc38e.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_42735c5a-25f/agent-a15cfc2a5966d648a.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_42735c5a-25f/agent-a15cfc2a5966d648a.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_42735c5a-25f/agent-a2d2853c739502494.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_42735c5a-25f/agent-a2d2853c739502494.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_42735c5a-25f/agent-a4999f184bfa88ce3.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_42735c5a-25f/agent-a4999f184bfa88ce3.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_42735c5a-25f/agent-a76c53cf721307d59.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_42735c5a-25f/agent-a76c53cf721307d59.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_42735c5a-25f/agent-a7d4327828f6cfc37.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_42735c5a-25f/agent-a7d4327828f6cfc37.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_42735c5a-25f/journal.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_d4d783ad-922/agent-a9c74e5686ef7362c.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_d4d783ad-922/agent-a9c74e5686ef7362c.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_d4d783ad-922/agent-ab6ff6a5a228edda1.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_d4d783ad-922/agent-ab6ff6a5a228edda1.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_d4d783ad-922/agent-ad40f962183c10594.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_d4d783ad-922/agent-ad40f962183c10594.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_d4d783ad-922/agent-af1eea2b31b8e6cfb.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_d4d783ad-922/agent-af1eea2b31b8e6cfb.meta.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/subagents/workflows/wf_d4d783ad-922/journal.jsonl
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/tool-results/bnxc36l6n.txt
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/tool-results/toolu_012jcUVMFQzQ7rLVqNUoASfJ.txt
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/tool-results/toolu_012r64TughQixbYvy47XSqim.txt
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/tool-results/toolu_016LVsdUZmGpHqudcjfaPxDd.txt
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/tool-results/toolu_01GAHvvLm1RQoR4Eat73dptb.txt
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/tool-results/toolu_01JU1b4zAMoP4giwChcjdGmY.txt
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/tool-results/toolu_01KDPNVykK4nRvgfPjiYmnRu.txt
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/tool-results/toolu_01RREagpudQZo4qusLgnTrqF.txt
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/tool-results/toolu_01ReGnA5GEcktJ9MFtDE29bB.txt
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/workflows/scripts/aad-build-form-decision-wf_d4d783ad-922.js
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/workflows/scripts/ux-review-aad-wf_42735c5a-25f.js
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/workflows/wf_42735c5a-25f.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/94dabade-db6d-4338-afd5-752e86e8af05/workflows/wf_d4d783ad-922.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/local-session-state.json
+ delete mode 100644 dev_log/logt2_claude_code_0630~0702/metadata.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a05eb5d6d488a87e5.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a05eb5d6d488a87e5.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a06acb20387a16a14.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a06acb20387a16a14.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a113fcef644b2bda5.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a113fcef644b2bda5.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a15ba7d2a74148480.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a15ba7d2a74148480.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a2325ea9b0b43a5b1.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a2325ea9b0b43a5b1.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a25f7b715ca5a6548.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a25f7b715ca5a6548.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a5439fa73a8d79b9c.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a5439fa73a8d79b9c.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a5490f41cc06d72d0.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a5490f41cc06d72d0.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a646fea73e1ab2918.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a646fea73e1ab2918.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a65427c1d7e027fc4.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a65427c1d7e027fc4.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a794d0be5802b8388.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a794d0be5802b8388.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a7993f5b7f3c2d9d4.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a7993f5b7f3c2d9d4.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a9df1500374b38cd9.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a9df1500374b38cd9.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a9eadd6b93303e534.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-a9eadd6b93303e534.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-aa7cb130047b8e65f.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-aa7cb130047b8e65f.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-ab056019e8a92fc71.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-ab056019e8a92fc71.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-aba321f8ff7996d64.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-aba321f8ff7996d64.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-ac2fb39fffa580180.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-ac2fb39fffa580180.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-acea447739b18be6f.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-acea447739b18be6f.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-ad026b444ad7d1b7e.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-ad026b444ad7d1b7e.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-ad89d65942c639034.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-ad89d65942c639034.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-ae6069a4709f00409.jsonl
+ create mode 100644 dev_log/session-export-1783018976906/93f87495-c8f3-48a0-bd2a-8771b089655c/subagents/agent-ae6069a4709f00409.meta.json
+ create mode 100644 dev_log/session-export-1783018976906/local-session-state.json
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/claude.ai-web.log (99%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/claude.ai-web1.log (100%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/claude_vm_node.log (100%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/claude_vm_swift.log (100%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/cowork_vm_node.log (97%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/cowork_vm_swift.log (100%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/coworkd.log (99%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/main.log (81%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/main1.log (99%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/main2.log (99%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/mcp-server-notion.log (100%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/mcp-server-notion1.log (100%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/mcp.log (100%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/mcp1.log (100%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/ssh.log (99%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/swift.log (100%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/unknown-window.log (99%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/unknown-window1.log (100%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/vzgvisor.log (100%)
+ rename dev_log/{logt2_claude_code_0630~0702 => session-export-1783018976906}/logs/window.log (100%)
+ create mode 100644 dev_log/session-export-1783018976906/metadata.json
+e7d8b14 dev-log: 세션 로그 아카이브 재정리 (logt2 → session-export)
