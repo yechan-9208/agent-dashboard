@@ -1,0 +1,13 @@
+{
+  "name": "aad",
+  "owner": {
+    "name": "yechan"
+  },
+  "plugins": [
+    {
+      "name": "aad",
+      "source": "./",
+      "description": "Claude·Codex 스킬/지시문 동기화 대시보드 — /aad:serve로 실행"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "generated_at": "2026-06-30",
+  "note": "번들 정적 카탈로그(스토어). 로컬 전용·외부 통신 없음. 사용자가 큐레이션 가능. body/neutral은 대표성 있는 더미 안전 콘텐츠.",
+  "items": [
+    {
+      "id": "cat-skill-code-review",
+      "kind": "skill",
+      "name": "code-review",
+      "tags": ["review", "code"],
+      "description": "변경된 코드를 가독성·버그 관점에서 리뷰한다.",
+      "official": true,
+      "source": "bundled",
+      "body": "---\nname: code-review\ndescription: 변경된 코드를 가독성·버그 관점에서 리뷰한다.\n---\n\n# Code Review\n\n변경된 파일을 읽고 다음을 점검한다:\n- 명백한 버그/엣지케이스\n- 가독성과 명명\n- 중복/단순화 여지\n"
+    },
+    {
+      "id": "cat-skill-docx",
+      "kind": "skill",
+      "name": "docx",
+      "tags": ["docs"],
+      "description": "Word(.docx) 문서를 생성·읽기·편집한다.",
+      "official": true,
+      "source": "bundled",
+      "body": "---\nname: docx\ndescription: Word(.docx) 문서를 생성·읽기·편집한다.\n---\n\n# DOCX\n\n.docx 파일을 만들거나 수정할 때 사용한다.\n"
+    },
+    {
+      "id": "cat-skill-pdf",
+      "kind": "skill",
+      "name": "pdf",
+      "tags": ["docs"],
+      "description": "PDF를 읽고 표·텍스트를 추출하거나 새로 만든다.",
+      "official": true,
+      "source": "bundled",
+      "body": "---\nname: pdf\ndescription: PDF를 읽고 표·텍스트를 추출하거나 새로 만든다.\n---\n\n# PDF\n\nPDF 추출/병합/생성 작업에 사용한다.\n"
+    },
+    {
+      "id": "cat-skill-deep-think",
+      "kind": "skill",
+      "name": "deep-think",
+      "tags": ["think", "infra"],
+      "description": "어려운 문제를 단계적으로 깊게 사고한다.",
+      "official": true,
+      "source": "bundled",
+      "body": "---\nname: deep-think\ndescription: 어려운 문제를 단계적으로 깊게 사고한다.\n---\n\n# Deep Think\n\n문제를 작은 단계로 나누고, 가정을 적고, 단계별로 검증한다.\n"
+    },
+    {
+      "id": "cat-agent-reviewer",
+      "kind": "agent",
+      "name": "reviewer",
+      "tags": ["review"],
+      "description": "코드 리뷰 전문 에이전트.",
+      "official": true,
+      "source": "bundled",
+      "neutral": {
+        "id": "agent-reviewer",
+        "name": "reviewer",
+        "description": "코드 리뷰 전문 에이전트.",
+        "system_prompt": "너는 코드 리뷰어다. 변경된 코드를 읽고 버그·가독성·중복을 지적한다.",
+        "model": "opus",
+        "tools": ["Read", "Grep", "Bash"]
+      },
+      "transform_notes": ["Codex 적용 시 에이전트별 tools 미지원(손실). Gemini는 매핑되는 tool만 유지."]
+    }
+  ]
+}

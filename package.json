@@ -1,0 +1,21 @@
+{
+  "name": "agent-dashboard",
+  "version": "1.0.0",
+  "description": "Local dashboard for syncing Claude Code and OpenAI Codex skills, agents, and instructions.",
+  "license": "MIT",
+  "type": "commonjs",
+  "bin": {
+    "aad": "bin/aad.js"
+  },
+  "scripts": {
+    "serve": "node bin/aad.js serve",
+    "serve:real": "AAD_ALLOW_REAL=1 AAD_MODE=real node bin/aad.js serve",
+    "demo": "node bin/aad.js",
+    "demo:serve": "node bin/aad.js serve"
+  },
+  "_comment": "Claude Code plugin + local CLI/server. Runtime dependencies are installed into Claude plugin data by scripts/plugin-serve.sh.",
+  "dependencies": {
+    "@iarna/toml": "^2.2.5",
+    "gray-matter": "^4.0.3"
+  }
+}

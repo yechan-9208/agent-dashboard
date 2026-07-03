@@ -1,0 +1,8 @@
+{
+  "name": "aad",
+  "version": "1.0.0",
+  "description": "Claude·Codex 스킬/지시문 동기화 대시보드 — /aad:serve로 실행",
+  "author": {
+    "name": "yechan"
+  }
+}

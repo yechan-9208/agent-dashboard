@@ -1,0 +1,1190 @@
+{
+  "version": 2,
+  "note": "기본 레지스트리. 출처: skills-manage(Apache-2.0, Copyright 2026 iamzhihuix) src/data/officialSources.ts의 OFFICIAL_PUBLISHERS 스냅샷. skills.sh 실시간 스크래핑 아님. skillCountCurated는 큐레이션 시점 스냅샷이라 실제 clone 수와 다를 수 있음. 출처/스팟체크: docs/verification/skill-registries-verification.md",
+  "publishers": [
+    {
+      "id": "microsoft",
+      "name": "Microsoft",
+      "slug": "microsoft",
+      "totalSkills": 404,
+      "repos": [
+        {
+          "id": "microsoft-azure-skills",
+          "name": "microsoft/azure-skills",
+          "url": "https://github.com/microsoft/azure-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 404
+        }
+      ]
+    },
+    {
+      "id": "github",
+      "name": "GitHub",
+      "slug": "github",
+      "totalSkills": 331,
+      "repos": [
+        {
+          "id": "github-awesome-copilot",
+          "name": "github/awesome-copilot",
+          "url": "https://github.com/github/awesome-copilot",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 331
+        }
+      ]
+    },
+    {
+      "id": "anthropics",
+      "name": "Anthropic",
+      "slug": "anthropics",
+      "totalSkills": 289,
+      "repos": [
+        {
+          "id": "anthropics-knowledge-work-plugins",
+          "name": "anthropics/knowledge-work-plugins",
+          "url": "https://github.com/anthropics/knowledge-work-plugins",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 176
+        },
+        {
+          "id": "anthropics-claude-plugins-official",
+          "name": "anthropics/claude-plugins-official",
+          "url": "https://github.com/anthropics/claude-plugins-official",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 31
+        },
+        {
+          "id": "anthropics-financial-services-plugins",
+          "name": "anthropics/financial-services-plugins",
+          "url": "https://github.com/anthropics/financial-services-plugins",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 30
+        },
+        {
+          "id": "anthropics-skills",
+          "name": "anthropics/skills",
+          "url": "https://github.com/anthropics/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 18
+        },
+        {
+          "id": "anthropics-claude-code",
+          "name": "anthropics/claude-code",
+          "url": "https://github.com/anthropics/claude-code",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 10
+        },
+        {
+          "id": "anthropics-life-sciences",
+          "name": "anthropics/life-sciences",
+          "url": "https://github.com/anthropics/life-sciences",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 6
+        },
+        {
+          "id": "anthropics-claude-agent-sdk-demos",
+          "name": "anthropics/claude-agent-sdk-demos",
+          "url": "https://github.com/anthropics/claude-agent-sdk-demos",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 6
+        },
+        {
+          "id": "anthropics-claude-cookbooks",
+          "name": "anthropics/claude-cookbooks",
+          "url": "https://github.com/anthropics/claude-cookbooks",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 4
+        },
+        {
+          "id": "anthropics-healthcare",
+          "name": "anthropics/healthcare",
+          "url": "https://github.com/anthropics/healthcare",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 3
+        }
+      ]
+    },
+    {
+      "id": "minimax-ai",
+      "name": "MiniMax",
+      "slug": "MiniMax-AI",
+      "totalSkills": 0,
+      "repos": [
+        {
+          "id": "MiniMax-AI-skills",
+          "name": "MiniMax-AI/skills",
+          "url": "https://github.com/MiniMax-AI/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 0
+        }
+      ]
+    },
+    {
+      "id": "getsentry",
+      "name": "Sentry",
+      "slug": "getsentry",
+      "totalSkills": 244,
+      "repos": [
+        {
+          "id": "getsentry-skills",
+          "name": "getsentry/skills",
+          "url": "https://github.com/getsentry/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 244
+        }
+      ]
+    },
+    {
+      "id": "vercel-labs",
+      "name": "Vercel Labs",
+      "slug": "vercel-labs",
+      "totalSkills": 214,
+      "repos": [
+        {
+          "id": "vercel-labs-agent-skills",
+          "name": "vercel-labs/agent-skills",
+          "url": "https://github.com/vercel-labs/agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 214
+        }
+      ]
+    },
+    {
+      "id": "firecrawl",
+      "name": "Firecrawl",
+      "slug": "firecrawl",
+      "totalSkills": 168,
+      "repos": [
+        {
+          "id": "firecrawl-cli",
+          "name": "firecrawl/cli",
+          "url": "https://github.com/firecrawl/cli",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 168
+        }
+      ]
+    },
+    {
+      "id": "posthog",
+      "name": "PostHog",
+      "slug": "posthog",
+      "totalSkills": 137,
+      "repos": [
+        {
+          "id": "posthog-posthog",
+          "name": "posthog/posthog",
+          "url": "https://github.com/posthog/posthog",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 137
+        }
+      ]
+    },
+    {
+      "id": "vercel",
+      "name": "Vercel",
+      "slug": "vercel",
+      "totalSkills": 120,
+      "repos": [
+        {
+          "id": "vercel-ai",
+          "name": "vercel/ai",
+          "url": "https://github.com/vercel/ai",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 120
+        }
+      ]
+    },
+    {
+      "id": "openai",
+      "name": "OpenAI",
+      "slug": "openai",
+      "totalSkills": 118,
+      "repos": [
+        {
+          "id": "openai-skills",
+          "name": "openai/skills",
+          "url": "https://github.com/openai/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 118
+        }
+      ]
+    },
+    {
+      "id": "langchain-ai",
+      "name": "LangChain",
+      "slug": "langchain-ai",
+      "totalSkills": 81,
+      "repos": [
+        {
+          "id": "langchain-ai-langchain-skills",
+          "name": "langchain-ai/langchain-skills",
+          "url": "https://github.com/langchain-ai/langchain-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 81
+        }
+      ]
+    },
+    {
+      "id": "hashicorp",
+      "name": "HashiCorp",
+      "slug": "hashicorp",
+      "totalSkills": 74,
+      "repos": [
+        {
+          "id": "hashicorp-agent-skills",
+          "name": "hashicorp/agent-skills",
+          "url": "https://github.com/hashicorp/agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 74
+        }
+      ]
+    },
+    {
+      "id": "cloudflare",
+      "name": "Cloudflare",
+      "slug": "cloudflare",
+      "totalSkills": 59,
+      "repos": [
+        {
+          "id": "cloudflare-skills",
+          "name": "cloudflare/skills",
+          "url": "https://github.com/cloudflare/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 59
+        }
+      ]
+    },
+    {
+      "id": "flutter",
+      "name": "Flutter",
+      "slug": "flutter",
+      "totalSkills": 58,
+      "repos": [
+        {
+          "id": "flutter-skills",
+          "name": "flutter/skills",
+          "url": "https://github.com/flutter/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 58
+        }
+      ]
+    },
+    {
+      "id": "dagster-io",
+      "name": "Dagster",
+      "slug": "dagster-io",
+      "totalSkills": 53,
+      "repos": [
+        {
+          "id": "dagster-io-skills",
+          "name": "dagster-io/skills",
+          "url": "https://github.com/dagster-io/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 53
+        }
+      ]
+    },
+    {
+      "id": "prisma",
+      "name": "Prisma",
+      "slug": "prisma",
+      "totalSkills": 47,
+      "repos": [
+        {
+          "id": "prisma-skills",
+          "name": "prisma/skills",
+          "url": "https://github.com/prisma/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 47
+        }
+      ]
+    },
+    {
+      "id": "firebase",
+      "name": "Firebase",
+      "slug": "firebase",
+      "totalSkills": 40,
+      "repos": [
+        {
+          "id": "firebase-agent-skills",
+          "name": "firebase/agent-skills",
+          "url": "https://github.com/firebase/agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 40
+        }
+      ]
+    },
+    {
+      "id": "bitwarden",
+      "name": "Bitwarden",
+      "slug": "bitwarden",
+      "totalSkills": 37,
+      "repos": [
+        {
+          "id": "bitwarden-ai-plugins",
+          "name": "bitwarden/ai-plugins",
+          "url": "https://github.com/bitwarden/ai-plugins",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 37
+        }
+      ]
+    },
+    {
+      "id": "streamlit",
+      "name": "Streamlit",
+      "slug": "streamlit",
+      "totalSkills": 36,
+      "repos": [
+        {
+          "id": "streamlit-agent-skills",
+          "name": "streamlit/agent-skills",
+          "url": "https://github.com/streamlit/agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 36
+        }
+      ]
+    },
+    {
+      "id": "pulumi",
+      "name": "Pulumi",
+      "slug": "pulumi",
+      "totalSkills": 31,
+      "repos": [
+        {
+          "id": "pulumi-agent-skills",
+          "name": "pulumi/agent-skills",
+          "url": "https://github.com/pulumi/agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 31
+        }
+      ]
+    },
+    {
+      "id": "huggingface",
+      "name": "Hugging Face",
+      "slug": "huggingface",
+      "totalSkills": 30,
+      "repos": [
+        {
+          "id": "huggingface-skills",
+          "name": "huggingface/skills",
+          "url": "https://github.com/huggingface/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 30
+        }
+      ]
+    },
+    {
+      "id": "upstash",
+      "name": "Upstash",
+      "slug": "upstash",
+      "totalSkills": 30,
+      "repos": [
+        {
+          "id": "upstash-context7",
+          "name": "upstash/context7",
+          "url": "https://github.com/upstash/context7",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 30
+        }
+      ]
+    },
+    {
+      "id": "sanity-io",
+      "name": "Sanity",
+      "slug": "sanity-io",
+      "totalSkills": 29,
+      "repos": [
+        {
+          "id": "sanity-io-agent-toolkit",
+          "name": "sanity-io/agent-toolkit",
+          "url": "https://github.com/sanity-io/agent-toolkit",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 29
+        }
+      ]
+    },
+    {
+      "id": "shopify",
+      "name": "Shopify",
+      "slug": "shopify",
+      "totalSkills": 28,
+      "repos": [
+        {
+          "id": "shopify-shopify-ai-toolkit",
+          "name": "shopify/shopify-ai-toolkit",
+          "url": "https://github.com/shopify/shopify-ai-toolkit",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 28
+        }
+      ]
+    },
+    {
+      "id": "runwayml",
+      "name": "Runway ML",
+      "slug": "runwayml",
+      "totalSkills": 27,
+      "repos": [
+        {
+          "id": "runwayml-skills",
+          "name": "runwayml/skills",
+          "url": "https://github.com/runwayml/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 27
+        }
+      ]
+    },
+    {
+      "id": "coinbase",
+      "name": "Coinbase",
+      "slug": "coinbase",
+      "totalSkills": 27,
+      "repos": [
+        {
+          "id": "coinbase-agentic-wallet-skills",
+          "name": "coinbase/agentic-wallet-skills",
+          "url": "https://github.com/coinbase/agentic-wallet-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 27
+        }
+      ]
+    },
+    {
+      "id": "automattic",
+      "name": "Automattic",
+      "slug": "automattic",
+      "totalSkills": 26,
+      "repos": [
+        {
+          "id": "automattic-agent-skills",
+          "name": "automattic/agent-skills",
+          "url": "https://github.com/automattic/agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 26
+        }
+      ]
+    },
+    {
+      "id": "astronomer",
+      "name": "Astronomer",
+      "slug": "astronomer",
+      "totalSkills": 26,
+      "repos": [
+        {
+          "id": "astronomer-agents",
+          "name": "astronomer/agents",
+          "url": "https://github.com/astronomer/agents",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 26
+        }
+      ]
+    },
+    {
+      "id": "clerk",
+      "name": "Clerk",
+      "slug": "clerk",
+      "totalSkills": 25,
+      "repos": [
+        {
+          "id": "clerk-skills",
+          "name": "clerk/skills",
+          "url": "https://github.com/clerk/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 25
+        }
+      ]
+    },
+    {
+      "id": "apify",
+      "name": "Apify",
+      "slug": "apify",
+      "totalSkills": 23,
+      "repos": [
+        {
+          "id": "apify-agent-skills",
+          "name": "apify/agent-skills",
+          "url": "https://github.com/apify/agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 23
+        }
+      ]
+    },
+    {
+      "id": "makenotion",
+      "name": "Notion",
+      "slug": "makenotion",
+      "totalSkills": 23,
+      "repos": [
+        {
+          "id": "makenotion-claude-code-notion-plugin",
+          "name": "makenotion/claude-code-notion-plugin",
+          "url": "https://github.com/makenotion/claude-code-notion-plugin",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 23
+        }
+      ]
+    },
+    {
+      "id": "webflow",
+      "name": "Webflow",
+      "slug": "webflow",
+      "totalSkills": 23,
+      "repos": [
+        {
+          "id": "webflow-webflow-skills",
+          "name": "webflow/webflow-skills",
+          "url": "https://github.com/webflow/webflow-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 23
+        }
+      ]
+    },
+    {
+      "id": "mapbox",
+      "name": "Mapbox",
+      "slug": "mapbox",
+      "totalSkills": 22,
+      "repos": [
+        {
+          "id": "mapbox-mapbox-agent-skills",
+          "name": "mapbox/mapbox-agent-skills",
+          "url": "https://github.com/mapbox/mapbox-agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 22
+        }
+      ]
+    },
+    {
+      "id": "google-gemini",
+      "name": "Google Gemini",
+      "slug": "google-gemini",
+      "totalSkills": 21,
+      "repos": [
+        {
+          "id": "google-gemini-gemini-skills",
+          "name": "google-gemini/gemini-skills",
+          "url": "https://github.com/google-gemini/gemini-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 21
+        }
+      ]
+    },
+    {
+      "id": "base",
+      "name": "Base",
+      "slug": "base",
+      "totalSkills": 21,
+      "repos": [
+        {
+          "id": "base-skills",
+          "name": "base/skills",
+          "url": "https://github.com/base/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 21
+        }
+      ]
+    },
+    {
+      "id": "neondatabase",
+      "name": "Neon Database",
+      "slug": "neondatabase",
+      "totalSkills": 20,
+      "repos": [
+        {
+          "id": "neondatabase-agent-skills",
+          "name": "neondatabase/agent-skills",
+          "url": "https://github.com/neondatabase/agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 20
+        }
+      ]
+    },
+    {
+      "id": "wix",
+      "name": "Wix",
+      "slug": "wix",
+      "totalSkills": 19,
+      "repos": [
+        {
+          "id": "wix-skills",
+          "name": "wix/skills",
+          "url": "https://github.com/wix/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 19
+        }
+      ]
+    },
+    {
+      "id": "tavily-ai",
+      "name": "Tavily AI",
+      "slug": "tavily-ai",
+      "totalSkills": 19,
+      "repos": [
+        {
+          "id": "tavily-ai-skills",
+          "name": "tavily-ai/skills",
+          "url": "https://github.com/tavily-ai/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 19
+        }
+      ]
+    },
+    {
+      "id": "encoredev",
+      "name": "Encore",
+      "slug": "encoredev",
+      "totalSkills": 18,
+      "repos": [
+        {
+          "id": "encoredev-skills",
+          "name": "encoredev/skills",
+          "url": "https://github.com/encoredev/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 18
+        }
+      ]
+    },
+    {
+      "id": "medusajs",
+      "name": "Medusa",
+      "slug": "medusajs",
+      "totalSkills": 16,
+      "repos": [
+        {
+          "id": "medusajs-medusa-agent-skills",
+          "name": "medusajs/medusa-agent-skills",
+          "url": "https://github.com/medusajs/medusa-agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 16
+        }
+      ]
+    },
+    {
+      "id": "datadog-labs",
+      "name": "Datadog",
+      "slug": "datadog-labs",
+      "totalSkills": 16,
+      "repos": [
+        {
+          "id": "datadog-labs-agent-skills",
+          "name": "datadog-labs/agent-skills",
+          "url": "https://github.com/datadog-labs/agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 16
+        }
+      ]
+    },
+    {
+      "id": "launchdarkly",
+      "name": "LaunchDarkly",
+      "slug": "launchdarkly",
+      "totalSkills": 16,
+      "repos": [
+        {
+          "id": "launchdarkly-agent-skills",
+          "name": "launchdarkly/agent-skills",
+          "url": "https://github.com/launchdarkly/agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 16
+        }
+      ]
+    },
+    {
+      "id": "callstackincubator",
+      "name": "Callstack",
+      "slug": "callstackincubator",
+      "totalSkills": 15,
+      "repos": [
+        {
+          "id": "callstackincubator-agent-skills",
+          "name": "callstackincubator/agent-skills",
+          "url": "https://github.com/callstackincubator/agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 15
+        }
+      ]
+    },
+    {
+      "id": "langfuse",
+      "name": "Langfuse",
+      "slug": "langfuse",
+      "totalSkills": 15,
+      "repos": [
+        {
+          "id": "langfuse-skills",
+          "name": "langfuse/skills",
+          "url": "https://github.com/langfuse/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 15
+        }
+      ]
+    },
+    {
+      "id": "auth0",
+      "name": "Auth0",
+      "slug": "auth0",
+      "totalSkills": 14,
+      "repos": [
+        {
+          "id": "auth0-agent-skills",
+          "name": "auth0/agent-skills",
+          "url": "https://github.com/auth0/agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 14
+        }
+      ]
+    },
+    {
+      "id": "mastra-ai",
+      "name": "Mastra AI",
+      "slug": "mastra-ai",
+      "totalSkills": 14,
+      "repos": [
+        {
+          "id": "mastra-ai-skills",
+          "name": "mastra-ai/skills",
+          "url": "https://github.com/mastra-ai/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 14
+        }
+      ]
+    },
+    {
+      "id": "supabase",
+      "name": "Supabase",
+      "slug": "supabase",
+      "totalSkills": 14,
+      "repos": [
+        {
+          "id": "supabase-agent-skills",
+          "name": "supabase/agent-skills",
+          "url": "https://github.com/supabase/agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 14
+        }
+      ]
+    },
+    {
+      "id": "wordpress",
+      "name": "WordPress",
+      "slug": "wordpress",
+      "totalSkills": 14,
+      "repos": [
+        {
+          "id": "wordpress-agent-skills",
+          "name": "wordpress/agent-skills",
+          "url": "https://github.com/wordpress/agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 14
+        }
+      ]
+    },
+    {
+      "id": "apollographql",
+      "name": "Apollo GraphQL",
+      "slug": "apollographql",
+      "totalSkills": 13,
+      "repos": [
+        {
+          "id": "apollographql-skills",
+          "name": "apollographql/skills",
+          "url": "https://github.com/apollographql/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 13
+        }
+      ]
+    },
+    {
+      "id": "clickhouse",
+      "name": "ClickHouse",
+      "slug": "clickhouse",
+      "totalSkills": 13,
+      "repos": [
+        {
+          "id": "clickhouse-agent-skills",
+          "name": "clickhouse/agent-skills",
+          "url": "https://github.com/clickhouse/agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 13
+        }
+      ]
+    },
+    {
+      "id": "dbt-labs",
+      "name": "dbt Labs",
+      "slug": "dbt-labs",
+      "totalSkills": 13,
+      "repos": [
+        {
+          "id": "dbt-labs-dbt-agent-skills",
+          "name": "dbt-labs/dbt-agent-skills",
+          "url": "https://github.com/dbt-labs/dbt-agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 13
+        }
+      ]
+    },
+    {
+      "id": "expo",
+      "name": "Expo",
+      "slug": "expo",
+      "totalSkills": 13,
+      "repos": [
+        {
+          "id": "expo-skills",
+          "name": "expo/skills",
+          "url": "https://github.com/expo/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 13
+        }
+      ]
+    },
+    {
+      "id": "resend",
+      "name": "Resend",
+      "slug": "resend",
+      "totalSkills": 13,
+      "repos": [
+        {
+          "id": "resend-resend-skills",
+          "name": "resend/resend-skills",
+          "url": "https://github.com/resend/resend-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 13
+        }
+      ]
+    },
+    {
+      "id": "triggerdotdev",
+      "name": "Trigger.dev",
+      "slug": "triggerdotdev",
+      "totalSkills": 13,
+      "repos": [
+        {
+          "id": "triggerdotdev-skills",
+          "name": "triggerdotdev/skills",
+          "url": "https://github.com/triggerdotdev/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 13
+        }
+      ]
+    },
+    {
+      "id": "tldraw",
+      "name": "tldraw",
+      "slug": "tldraw",
+      "totalSkills": 13,
+      "repos": [
+        {
+          "id": "tldraw-tldraw",
+          "name": "tldraw/tldraw",
+          "url": "https://github.com/tldraw/tldraw",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 13
+        }
+      ]
+    },
+    {
+      "id": "brave",
+      "name": "Brave",
+      "slug": "brave",
+      "totalSkills": 11,
+      "repos": [
+        {
+          "id": "brave-brave-search-skills",
+          "name": "brave/brave-search-skills",
+          "url": "https://github.com/brave/brave-search-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 11
+        }
+      ]
+    },
+    {
+      "id": "better-auth",
+      "name": "Better Auth",
+      "slug": "better-auth",
+      "totalSkills": 11,
+      "repos": [
+        {
+          "id": "better-auth-skills",
+          "name": "better-auth/skills",
+          "url": "https://github.com/better-auth/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 11
+        }
+      ]
+    },
+    {
+      "id": "facebook",
+      "name": "React (Facebook)",
+      "slug": "facebook",
+      "totalSkills": 11,
+      "repos": [
+        {
+          "id": "facebook-react",
+          "name": "facebook/react",
+          "url": "https://github.com/facebook/react",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 11
+        }
+      ]
+    },
+    {
+      "id": "figma",
+      "name": "Figma",
+      "slug": "figma",
+      "totalSkills": 11,
+      "repos": [
+        {
+          "id": "figma-mcp-server-guide",
+          "name": "figma/mcp-server-guide",
+          "url": "https://github.com/figma/mcp-server-guide",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 11
+        }
+      ]
+    },
+    {
+      "id": "rivet-dev",
+      "name": "Rivet",
+      "slug": "rivet-dev",
+      "totalSkills": 11,
+      "repos": [
+        {
+          "id": "rivet-dev-skills",
+          "name": "rivet-dev/skills",
+          "url": "https://github.com/rivet-dev/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 11
+        }
+      ]
+    },
+    {
+      "id": "n8n-io",
+      "name": "n8n",
+      "slug": "n8n-io",
+      "totalSkills": 11,
+      "repos": [
+        {
+          "id": "n8n-io-n8n",
+          "name": "n8n-io/n8n",
+          "url": "https://github.com/n8n-io/n8n",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 11
+        }
+      ]
+    },
+    {
+      "id": "stripe",
+      "name": "Stripe",
+      "slug": "stripe",
+      "totalSkills": 10,
+      "repos": [
+        {
+          "id": "stripe-ai",
+          "name": "stripe/ai",
+          "url": "https://github.com/stripe/ai",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 10
+        }
+      ]
+    },
+    {
+      "id": "elevenlabs",
+      "name": "ElevenLabs",
+      "slug": "elevenlabs",
+      "totalSkills": 9,
+      "repos": [
+        {
+          "id": "elevenlabs-skills",
+          "name": "elevenlabs/skills",
+          "url": "https://github.com/elevenlabs/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 9
+        }
+      ]
+    },
+    {
+      "id": "remotion-dev",
+      "name": "Remotion",
+      "slug": "remotion-dev",
+      "totalSkills": 9,
+      "repos": [
+        {
+          "id": "remotion-dev-skills",
+          "name": "remotion-dev/skills",
+          "url": "https://github.com/remotion-dev/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 9
+        }
+      ]
+    },
+    {
+      "id": "planetscale",
+      "name": "PlanetScale",
+      "slug": "planetscale",
+      "totalSkills": 8,
+      "repos": [
+        {
+          "id": "planetscale-database-skills",
+          "name": "planetscale/database-skills",
+          "url": "https://github.com/planetscale/database-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 8
+        }
+      ]
+    },
+    {
+      "id": "axiomhq",
+      "name": "Axiom",
+      "slug": "axiomhq",
+      "totalSkills": 7,
+      "repos": [
+        {
+          "id": "axiomhq-skills",
+          "name": "axiomhq/skills",
+          "url": "https://github.com/axiomhq/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 7
+        }
+      ]
+    },
+    {
+      "id": "browserbase",
+      "name": "Browserbase",
+      "slug": "browserbase",
+      "totalSkills": 7,
+      "repos": [
+        {
+          "id": "browserbase-skills",
+          "name": "browserbase/skills",
+          "url": "https://github.com/browserbase/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 7
+        }
+      ]
+    },
+    {
+      "id": "denoland",
+      "name": "Deno",
+      "slug": "denoland",
+      "totalSkills": 6,
+      "repos": [
+        {
+          "id": "denoland-skills",
+          "name": "denoland/skills",
+          "url": "https://github.com/denoland/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 6
+        }
+      ]
+    },
+    {
+      "id": "redis",
+      "name": "Redis",
+      "slug": "redis",
+      "totalSkills": 6,
+      "repos": [
+        {
+          "id": "redis-agent-skills",
+          "name": "redis/agent-skills",
+          "url": "https://github.com/redis/agent-skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 6
+        }
+      ]
+    },
+    {
+      "id": "semgrep",
+      "name": "Semgrep",
+      "slug": "semgrep",
+      "totalSkills": 6,
+      "repos": [
+        {
+          "id": "semgrep-skills",
+          "name": "semgrep/skills",
+          "url": "https://github.com/semgrep/skills",
+          "branch": "main",
+          "official": true,
+          "skillCountCurated": 6
+        }
+      ]
+    }
+  ]
+}

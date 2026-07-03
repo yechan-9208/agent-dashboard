@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI-Agent Dashboard</title>
+  <link rel="stylesheet" href="/design-system.css" />
+  <style>
+    /* 최소 보조 규칙(디자인 시스템에 없는 작은 유틸만). 색/타이포/레이아웃은 design-system.css가 권위. */
+    [hidden] { display: none !important; }
+    .muted { color: var(--st-muted); }
+    .warn-text { color: var(--st-warn); }
+    .stack-gap { display: flex; flex-direction: column; gap: 16px; }
+    .inline-acts { display: flex; gap: 6px; flex-wrap: wrap; }
+    .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .store-card-foot { display: flex; gap: 8px; margin-top: 14px; }
+    .pg-block { margin-bottom: 12px; }
+    .pg-q-label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px; }
+    .pg-input, .pg-textarea { width: 100%; font-family: inherit; font-size: 14px; color: var(--color-ink);
+      background: var(--color-canvas); border: 1px solid var(--color-border-input); border-radius: 11px; padding: 9px 12px; }
+    .pg-textarea { min-height: 84px; resize: vertical; }
+    .pg-opt { display: inline-flex; align-items: center; gap: 6px; margin: 0 14px 6px 0; font-size: 13px; }
+    .wizard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+    .panel-foot .muted { width: 100%; white-space: pre-wrap; font-size: 12px; margin-top: 2px; }
+    .skel { color: var(--st-muted); padding: 22px; text-align: center; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- ===================== SIDEBAR (v2: 접힘=아이콘 레일, <1000px 자동) ===================== -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark" id="sidebar-expand" title="사이드바 펼치기">AAD</div>
+        <div class="brand-titles">
+          <div class="brand-name">AI-Agent Dashboard</div>
+          <div class="brand-sub">로컬 전용 · Claude · Codex</div>
+        </div>
+        <button class="sidebar-toggle" id="sidebar-toggle" title="사이드바 접기" aria-label="사이드바 접기/펼치기">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 3.5 5.5 8 10 12.5"/></svg>
+        </button>
+      </div>
+
+      <div class="nav-group-label">탐색</div>
+      <nav class="nav" id="nav">
+        <button class="nav-item active" data-view="overview">
+          <span class="nav-ic"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9.5 10 3.5l7 6"/><path d="M4.8 8.5V16h10.4V8.5"/></svg></span>
+          <span class="nav-label">개요</span><span class="nav-count" data-count="overview" hidden></span>
+        </button>
+        <button class="nav-item" data-view="instructions">
+          <span class="nav-ic"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 2.75h6.5L15.5 6.75V17.25H5z"/><path d="M11.25 2.9V7h4.1"/><path d="M7.5 11h5M7.5 13.6h5"/></svg></span>
+          <span class="nav-label">지시문</span><span class="nav-count" data-count="instructions" hidden></span>
+        </button>
+        <button class="nav-item" data-view="skills">
+          <span class="nav-ic"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 3.2v2.1a1.4 1.4 0 0 0 2.8 0V3.2H15v4.3h-1.9a1.4 1.4 0 0 0 0 2.8H15V16H4V3.2z"/></svg></span>
+          <span class="nav-label">스킬</span><span class="nav-count" data-count="skills" hidden></span>
+        </button>
+        <!-- 에이전트·플레이그라운드·스토어 뷰는 숨김(D32) — docs/plan/todo.md 참고. -->
+        <button class="nav-item" data-view="usage">
+          <span class="nav-ic"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3.2 16.5h13.6M5.5 16V9.5M9.5 16V5M13.5 16v-4"/></svg></span>
+          <span class="nav-label">사용량</span><span class="nav-count" data-count="usage" hidden></span>
+        </button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="server-row"><span class="server-dot"></span><span class="nav-label">127.0.0.1 · 연결됨</span></div>
+        <div class="local-badge">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="7" width="9" height="6.5" rx="1.5"/><path d="M5.5 7V5.2a2.5 2.5 0 0 1 5 0V7"/></svg>
+          <span class="nav-label">로컬 전용 · 외부 전송 없음</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===================== MAIN ===================== -->
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-titles">
+          <div class="topbar-title" id="topbar-title">개요</div>
+          <div class="topbar-sub" id="topbar-sub">두 모델(Claude · Codex)의 설정을 한눈에</div>
+        </div>
+        <div class="topbar-spacer"></div>
+        <div class="search" id="global-search" hidden>
+          <span class="search-ic"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.2" cy="6.2" r="4.6"/><path d="M9.6 9.6 14 14"/></svg></span>
+          <input id="global-search-input" placeholder="검색" />
+        </div>
+        <button class="tb-icon-btn" id="refresh" title="새로고침">
+          <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 4.5v3.2h-3.2"/><path d="M14.4 7.6A6 6 0 1 0 15 10"/></svg>
+        </button>
+      </header>
+
+      <div class="content">
+        <div class="content-inner">
+
+          <!-- ===== 1. 개요 (v2: 배너 + 4스탯 + 상태분해·TOP5 + 최근사용·커버리지) ===== -->
+          <section data-panel="overview">
+            <div id="ov-onboard" hidden></div>
+            <div id="ov-guide" class="stack-gap" style="margin-bottom:18px"></div>
+            <div class="stat-grid" id="ov-stats"></div>
+
+            <!-- 그리드 1: 동기화 상태(분해 막대) + 카테고리 TOP5 -->
+            <div class="ov-grid" id="ov-grid1" style="margin-top:15px">
+              <div class="widget" id="ov-sync-widget"><div class="skel">불러오는 중…</div></div>
+              <div class="widget">
+                <div class="widget-head"><div class="widget-title">카테고리 TOP 5</div><div class="widget-sub">스킬 많은 순</div></div>
+                <div class="dist" id="ov-dist"></div>
+              </div>
+            </div>
+
+            <!-- 그리드 2: 최근 사용 + 모델 커버리지 -->
+            <div class="ov-grid" id="ov-grid2" style="margin-top:15px">
+              <div class="widget" id="ov-recent-widget"><div class="skel">불러오는 중…</div></div>
+              <div class="widget" id="ov-cov-widget"><div class="skel">불러오는 중…</div></div>
+            </div>
+          </section>
+
+          <!-- ===== 2. 지시문 (모델별 세로 카드 3개, F3) ===== -->
+          <section data-panel="instructions" hidden>
+            <div class="instr-summary" id="instr-summary"></div>
+            <div class="instr-cards" id="instr-cards"></div>
+          </section>
+
+          <!-- ===== 3. 스킬 (v2: 좌측 폴더 + 우측 매트릭스, ✓/– 중립 마크) ===== -->
+          <section data-panel="skills" hidden>
+            <div class="scope-toolbar">
+              <div class="filters" id="skills-filters"></div>
+              <button class="btn btn-dark btn-sm" data-open-projects="1">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4.2c0-.6.5-1.1 1.1-1.1h3l1.3 1.5h4.5c.6 0 1.1.5 1.1 1.1v6.1c0 .6-.5 1.1-1.1 1.1H3.1c-.6 0-1.1-.5-1.1-1.1z"/></svg>
+                프로젝트 관리
+              </button>
+            </div>
+            <!-- 좌측 폴더 리스트 + 우측 표. 1000–1200px에서는 폴더가 위로 스택(design-system.css). -->
+            <div class="master-detail">
+              <!-- 좌측: 스킬이 있는 폴더 목록(scope 기준 그룹핑) -->
+              <aside class="md-folders" id="skill-folder-pane">
+                <div class="mdf-head">폴더</div>
+                <div class="search mdf-search">
+                  <span class="search-ic"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.2" cy="6.2" r="4.6"/><path d="M9.6 9.6 14 14"/></svg></span>
+                  <input id="skill-folder-search" placeholder="폴더 검색" />
+                </div>
+                <div class="mdf-list" id="skill-folder-list"></div>
+              </aside>
+              <!-- 우측: 선택 폴더의 스킬 매트릭스 -->
+              <div class="md-detail">
+                <div class="mx-toolbar">
+                  <div class="filters mx-state-filters" id="skill-mx-state"></div>
+                  <div class="search mx-search">
+                    <span class="search-ic"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.2" cy="6.2" r="4.6"/><path d="M9.6 9.6 14 14"/></svg></span>
+                    <input id="skill-mx-search" placeholder="이름 검색" />
+                  </div>
+                </div>
+                <div class="mx-context" id="skill-mx-context"></div>
+                <div class="mx-banner" id="skill-mx-scan" hidden></div>
+                <div class="batch-bar">
+                  <label class="batch-check"><input type="checkbox" id="skill-mx-all" /> 전체 선택</label>
+                  <span class="batch-progress" id="skill-mx-progress"></span>
+                  <span class="spacer"></span>
+                  <button class="btn btn-secondary btn-sm" id="skill-mx-batch-sync">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M13 3.5v2.8h-2.8"/><path d="M3 12.5v-2.8h2.8"/><path d="M12.4 6.1A4.5 4.5 0 0 0 4.2 5.4M3.6 9.9a4.5 4.5 0 0 0 8.2.7"/></svg>
+                    선택 항목 동기화
+                  </button>
+                </div>
+                <div class="tbl-wrap">
+                  <table class="items mx-table" id="skill-mx-table">
+                    <thead><tr><th class="check-col"></th><th class="mx-scope-col">경로</th><th>이름</th><th>태그</th><th class="mx-tool-col"><span class="th-tool-dot claude"></span>Claude</th><th class="mx-tool-col"><span class="th-tool-dot codex"></span>Codex</th><th class="mx-sync-col">동기화</th></tr></thead>
+                    <tbody id="skill-mx-rows"></tbody>
+                  </table>
+                </div>
+                <div class="mx-more" id="skill-mx-more"></div>
+                <div id="skill-mx-batch-result"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ===== 4. 에이전트 (F5 마스터-디테일: 좌측 폴더 + 우측 매트릭스, F4 패턴 재사용) ===== -->
+          <section data-panel="agents" hidden>
+            <div class="scope-toolbar">
+              <div class="filters" id="agents-filters"></div>
+              <button class="btn btn-dark btn-sm" data-open-projects="1">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4.2c0-.6.5-1.1 1.1-1.1h3l1.3 1.5h4.5c.6 0 1.1.5 1.1 1.1v6.1c0 .6-.5 1.1-1.1 1.1H3.1c-.6 0-1.1-.5-1.1-1.1z"/></svg>
+                프로젝트 관리
+              </button>
+            </div>
+            <!-- F5: 좌측 폴더 리스트 + 우측 표. 스킬과 동일 구조. -->
+            <div class="master-detail">
+              <aside class="md-folders" id="agent-folder-pane">
+                <div class="mdf-head">폴더</div>
+                <div class="search mdf-search">
+                  <span class="search-ic"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.2" cy="6.2" r="4.6"/><path d="M9.6 9.6 14 14"/></svg></span>
+                  <input id="agent-folder-search" placeholder="폴더 검색" />
+                </div>
+                <div class="mdf-list" id="agent-folder-list"></div>
+              </aside>
+              <div class="md-detail">
+                <div class="mx-toolbar">
+                  <div class="filters mx-state-filters" id="agent-mx-state"></div>
+                  <div class="search mx-search">
+                    <span class="search-ic"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.2" cy="6.2" r="4.6"/><path d="M9.6 9.6 14 14"/></svg></span>
+                    <input id="agent-mx-search" placeholder="이름 검색" />
+                  </div>
+                </div>
+                <div class="mx-context" id="agent-mx-context"></div>
+                <div class="mx-banner" id="agent-mx-scan" hidden></div>
+                <div class="batch-bar">
+                  <label class="batch-check"><input type="checkbox" id="agent-mx-all" /> 전체 선택</label>
+                  <span class="batch-progress" id="agent-mx-progress"></span>
+                  <span class="spacer"></span>
+                  <button class="btn btn-secondary btn-sm" id="agent-mx-batch-sync">선택 항목 동기화</button>
+                </div>
+                <div class="tbl-wrap">
+                  <table class="items mx-table" id="agent-mx-table">
+                    <thead><tr><th class="check-col"></th><th class="mx-scope-col">경로</th><th>이름</th><th>태그</th><th class="mx-tool-col"><span class="th-tool-dot claude"></span>Claude</th><th class="mx-tool-col"><span class="th-tool-dot codex"></span>Codex</th><th class="mx-sync-col">동기화</th></tr></thead>
+                    <tbody id="agent-mx-rows"></tbody>
+                  </table>
+                </div>
+                <div class="mx-more" id="agent-mx-more"></div>
+                <div id="agent-mx-batch-result"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ===== 5. 스토어 ===== -->
+          <section data-panel="store" hidden>
+            <div class="scope-toolbar">
+              <div class="filters" id="store-filters"></div>
+              <div class="inline-acts">
+                <button class="btn btn-ghost btn-sm" data-reg-updates="1">🔄 업데이트 확인</button>
+                <button class="btn btn-ghost btn-sm" data-reg-open="1">📚 레지스트리</button>
+              </div>
+            </div>
+
+            <!-- SKC2: 기본 뷰 = 퍼블리셔 카드 그리드 + 번들/검색 카드 -->
+            <div id="store-default">
+              <!-- F6: 시작 시 백그라운드 수집 진행 상태 배너(폴링 없음 — 새로고침/재진입으로 갱신) -->
+              <div id="store-collect-status" hidden></div>
+              <div class="section-head"><div class="section-title">퍼블리셔</div><div class="section-note">카드를 눌러 스킬 둘러보기</div></div>
+              <div class="pub-grid" id="store-pub-grid"></div>
+              <div class="section-head"><div class="section-title">번들 · 검색 결과</div></div>
+              <div class="grid-cards" id="store-list"></div>
+            </div>
+
+            <!-- SKC2: 드릴다운 = 특정 퍼블리셔의 스킬 목록 -->
+            <div id="store-drilldown" hidden>
+              <div class="pub-drill-bar">
+                <button class="btn btn-ghost btn-sm" data-pub-back="1">← 전체</button>
+                <span class="pub-drill-title" id="store-drill-title"></span>
+                <span class="pub-drill-sub" id="store-drill-sub"></span>
+              </div>
+              <div class="filters pub-cat-filters" id="store-cat-filters"></div>
+              <div class="grid-cards" id="store-drill-list"></div>
+            </div>
+          </section>
+
+          <!-- ===== 6. 플레이그라운드 ===== -->
+          <section data-panel="playground" hidden>
+            <div class="section-head"><div class="section-title">스킬 찾기</div><div class="section-note">질문 → 추천 → 미리보기 → 적용</div></div>
+            <div class="card">
+              <form id="pg-skill-wizard" class="wizard-grid"></form>
+              <div class="inline-acts" style="margin-top:16px">
+                <button class="btn btn-primary btn-sm" id="pg-skill-reco-btn">추천 받기</button>
+              </div>
+            </div>
+            <div class="tbl-wrap" style="margin-top:14px">
+              <table class="items">
+                <thead><tr><th>이름</th><th>추천도</th><th>이유</th><th class="tool-col">동작</th></tr></thead>
+                <tbody id="pg-skill-recs"></tbody>
+              </table>
+            </div>
+
+            <div class="section-head"><div class="section-title">에이전트 만들기</div><div class="section-note">역할 → 스킬 추천 → 조합</div></div>
+            <div class="card">
+              <textarea id="pg-role" class="pg-textarea" placeholder="에이전트의 역할/목적을 적어주세요 (예: 코드 리뷰 자동화)"></textarea>
+              <div class="inline-acts" style="margin-top:12px">
+                <button class="btn btn-primary btn-sm" id="pg-role-reco-btn">스킬 추천</button>
+              </div>
+            </div>
+            <div class="tbl-wrap" style="margin-top:14px">
+              <table class="items">
+                <thead><tr><th>선택</th><th>이름</th><th>추천도</th><th>이유</th></tr></thead>
+                <tbody id="pg-agent-recs"></tbody>
+              </table>
+            </div>
+            <div class="card" style="margin-top:14px">
+              <div class="inline-acts">
+                <input id="pg-agent-name" class="pg-input" style="max-width:260px" placeholder="에이전트 이름(선택)" />
+                <button class="btn btn-ghost btn-sm" id="pg-compose-btn">에이전트로 조합</button>
+              </div>
+              <div id="pg-compose-out" style="margin-top:14px"></div>
+            </div>
+          </section>
+
+          <!-- ===== 7. 사용량 (v2: 프라이버시 배너 + 3지표 + 정렬 토글 + 5컬럼) ===== -->
+          <section data-panel="usage" hidden>
+            <div class="info-banner" style="margin-bottom:18px">
+              <span class="ib-ic"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="7" width="9" height="6.5" rx="1.5"/><path d="M5.5 7V5.2a2.5 2.5 0 0 1 5 0V7"/></svg></span>
+              <span class="ib-txt" id="usage-note">Claude 세션 기록에서 스킬 사용 <b>횟수만</b> 셉니다 · 대화 내용은 읽지 않으며 외부로 전송되지 않습니다.</span>
+            </div>
+            <div class="stat-grid cols-3" id="usage-stats" style="margin-bottom:16px"></div>
+            <div class="usage-toolbar">
+              <h2>스킬별 사용량</h2>
+              <div class="usage-sort-group" id="usage-sort"></div>
+            </div>
+            <div class="tbl-wrap">
+              <table class="items">
+                <thead><tr>
+                  <th>이름</th>
+                  <th class="num-col" title="마지막으로 쓴 시각">최근 사용</th>
+                  <th class="num-col" title="최근 24시간 동안 쓴 횟수">지난 1일</th>
+                  <th class="num-col" title="최근 7일 동안 쓴 횟수">지난 7일</th>
+                  <th title="전체 기간 누적 횟수">전체</th>
+                </tr></thead>
+                <tbody id="usage-rows"></tbody>
+              </table>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== 공용 슬라이드오버 ===================== -->
+  <div class="scrim" id="scrim"></div>
+  <div class="panel" id="panel">
+    <div class="panel-head">
+      <div class="panel-title-row">
+        <div class="panel-title" id="panel-title"></div>
+        <button class="panel-close" id="panel-close">✕</button>
+      </div>
+      <div class="panel-meta" id="panel-meta"></div>
+    </div>
+    <div class="panel-body" id="panel-body"></div>
+    <div class="panel-foot" id="panel-foot"></div>
+  </div>
+
+  <!-- (PI 게이트 모달 제거 — 백엔드에서 PI 게이트가 전면 제거되어 409 PI 응답이 더 이상 없음.) -->
+
+  <!-- ===================== 충돌 해결 모달 ===================== -->
+  <div class="modal-scrim" id="conflict-modal" hidden>
+    <div class="modal">
+      <div class="modal-head"><div class="panel-title" style="font-size:17px">충돌</div></div>
+      <div class="modal-body">
+        <p class="muted" id="conflict-msg"></p>
+        <div id="conflict-diff" style="margin-top:10px"></div>
+        <div id="conflict-options" style="margin-top:8px">
+          <label class="radio-row sel"><span class="radio-dot"></span><span class="radio-txt">덮어쓰기<span class="rt-sub">기존 항목은 백업 후 교체됩니다</span></span><input type="radio" name="conflict-res" value="overwrite" hidden checked /></label>
+          <label class="radio-row"><span class="radio-dot"></span><span class="radio-txt">건너뛰기<span class="rt-sub">아무 변경도 하지 않음</span></span><input type="radio" name="conflict-res" value="skip" hidden /></label>
+          <label class="radio-row"><span class="radio-dot"></span><span class="radio-txt">이름 변경<span class="rt-sub">새 이름으로 추가 저장</span></span><input type="radio" name="conflict-res" value="rename" hidden /></label>
+        </div>
+        <input id="conflict-newname" class="pg-input" placeholder="새 이름" style="margin-top:10px" hidden />
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost btn-sm" id="conflict-cancel">취소</button>
+        <button class="btn btn-primary btn-sm" id="conflict-confirm">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== 동기화(Sync) 모달 (v2: 미리보기 → 명시적 적용) ===================== -->
+  <div class="modal-scrim" id="sync-modal" hidden>
+    <div class="modal modal-wide">
+      <div class="modal-head"><div class="panel-title" style="font-size:17px" id="sync-title">동기화 미리보기</div></div>
+      <div class="modal-body" id="sync-body">
+        <div class="skel">불러오는 중…</div>
+      </div>
+      <div class="modal-foot">
+        <span class="trust-line">
+          <span class="tl-ic"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="7" width="9" height="6.5" rx="1.5"/><path d="M5.5 7V5.2a2.5 2.5 0 0 1 5 0V7"/></svg></span>
+          이 작업은 로컬 파일에만 씁니다 · 외부 전송 없음
+        </span>
+        <button class="btn btn-ghost btn-sm" id="sync-cancel">취소</button>
+        <button class="btn btn-primary btn-sm" id="sync-run" disabled>적용하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- (지시문 동기화 모달 제거 — 지시문은 비교 전용.) -->
+
+  <!-- ===================== 프로젝트 관리 모달 ===================== -->
+  <div class="modal-scrim" id="projects-modal" hidden>
+    <div class="modal modal-wide">
+      <div class="modal-head"><div class="panel-title" style="font-size:17px">프로젝트 관리</div></div>
+      <div class="modal-body" id="projects-body">
+        <div class="skel">불러오는 중…</div>
+      </div>
+      <div class="modal-foot">
+        <span class="muted" id="projects-hint" style="margin-right:auto;font-size:12px"></span>
+        <button class="btn btn-ghost btn-sm" id="projects-close-btn">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== 레지스트리 관리 모달 (스토어-R2) ===================== -->
+  <div class="modal-scrim" id="registries-modal" hidden>
+    <div class="modal modal-wide">
+      <div class="modal-head"><div class="panel-title" style="font-size:17px">레지스트리</div></div>
+      <div class="modal-body" id="registries-body">
+        <div class="skel">불러오는 중…</div>
+      </div>
+      <div class="modal-foot">
+        <span class="muted" id="registries-hint" style="margin-right:auto;font-size:12px"></span>
+        <button class="btn btn-ghost btn-sm" id="registries-close-btn">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- (백업/복구 UI 제거 — 백엔드 /backups·복구 API·자동 백업 엔진은 존치, UI 진입점만 삭제.) -->
+
+  <!-- ===================== 스킬 본문 뷰어 (중앙 모달) ===================== -->
+  <div class="viewer-scrim" id="content-viewer" hidden>
+    <div class="viewer-modal" id="viewer-modal">
+      <div class="viewer-head">
+        <div class="viewer-titles">
+          <div class="viewer-title" id="viewer-title"></div>
+          <div class="viewer-path-row">
+            <div class="viewer-path" id="viewer-path"></div>
+            <button class="btn btn-ghost btn-sm viewer-copy" id="viewer-copy" title="경로 복사" hidden>경로 복사</button>
+          </div>
+        </div>
+        <div class="viewer-tabs" id="viewer-tabs"></div>
+        <button class="btn btn-ghost btn-sm" id="viewer-close">닫기 ✕</button>
+      </div>
+      <div class="viewer-body" id="viewer-body"></div>
+    </div>
+  </div>
+
+  <!-- ===================== 토스트 ===================== -->
+  <div class="toast" id="toast"><span id="toast-msg"></span></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

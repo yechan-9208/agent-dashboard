@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "note": "분류 카테고리(사용자 지정 12종). key = 정규화 키(cli/category.js PRESET과 일치). ko = 표시 라벨. en = 영어 라벨(레지스트리 수집 시 라벨 매칭용). keywords = 자동 카테고리화 키워드(영어 — 수집 대상 스킬이 영어). cli/registry.js는 key/ko/en만 읽고 keywords는 무시한다(레거시 TAG_KEYWORDS 사용). cli/core.js 로컬 autoTags 파생은 keywords를 읽어 이름(+설명)에 매칭한다.",
+  "tags": [
+    { "key": "ui", "ko": "UI", "en": "UI", "keywords": ["ui", "ux", "frontend", "react", "vue", "svelte", "css", "tailwind", "html", "component", "design system", "styling", "layout"] },
+    { "key": "서버", "ko": "서버", "en": "Server", "keywords": ["server", "backend", "api", "rest", "graphql", "endpoint", "microservice", "serverless", "worker", "runtime", "http", "grpc"] },
+    { "key": "앱", "ko": "앱", "en": "App", "keywords": ["app", "mobile", "ios", "android", "flutter", "react native", "expo", "swift", "kotlin", "dart"] },
+    { "key": "devops", "ko": "devOps", "en": "DevOps", "keywords": ["devops", "ci/cd", "cicd", "pipeline", "terraform", "infrastructure", "infra", "deploy", "deployment", "kubernetes", "docker", "pulumi", "ansible", "helm"] },
+    { "key": "ai", "ko": "AI", "en": "AI", "keywords": ["ai", "ml", "machine learning", "llm", "langchain", "model", "transformer", "huggingface", "embedding", "rag", "agent", "prompt", "openai", "anthropic"] },
+    { "key": "db", "ko": "DB", "en": "Database", "keywords": ["database", "db", "sql", "postgres", "postgresql", "mysql", "sqlite", "mongodb", "redis", "prisma", "orm", "migration", "firestore", "query", "schema"] },
+    { "key": "보안", "ko": "보안", "en": "Security", "keywords": ["security", "secure", "auth", "authentication", "authorization", "oauth", "sso", "mfa", "encryption", "vulnerability", "secret", "clerk", "auth0", "jwt", "csrf"] },
+    { "key": "테스트", "ko": "테스트", "en": "Testing", "keywords": ["test", "testing", "unit test", "e2e", "jest", "vitest", "pytest", "playwright", "cypress", "coverage", "monitor", "monitoring", "observability", "sentry"] },
+    { "key": "문서", "ko": "문서", "en": "Docs", "keywords": ["docs", "documentation", "readme", "writing", "notion", "markdown", "changelog", "guide", "tutorial", "manual"] },
+    { "key": "디자인", "ko": "디자인", "en": "Design", "keywords": ["design", "figma", "ux", "wireframe", "prototype", "mockup", "diagram", "illustration", "branding", "icon"] },
+    { "key": "코드", "ko": "코드", "en": "Code", "keywords": ["code", "coding", "refactor", "refactoring", "lint", "formatter", "codegen", "boilerplate", "scaffold", "snippet", "generator"] },
+    { "key": "리뷰", "ko": "리뷰", "en": "Review", "keywords": ["review", "code review", "pr review", "audit", "critique", "feedback", "inspect", "lint review"] }
+  ]
+}

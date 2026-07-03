@@ -1,0 +1,1043 @@
+#!/usr/bin/env node
+'use strict';
+// aad = ai-agent-dashboard CLI. 로직은 cli/core.js에 있고, 여기서는 출력만 한다.
+// 안전 흐름: push는 기본 미리보기(dry-run), 실제 쓰기는 --apply가 있어야 한다.
+
+const core = require('../cli/core');
+const diff = require('../cli/diff');
+
+// --- 아주 작은 인자 파서 (--key value, --flag) ---
+function parseArgs(argv) {
+  const out = { _: [] };
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    if (a.startsWith('--')) {
+      const key = a.slice(2);
+      const next = argv[i + 1];
+      if (next && !next.startsWith('--')) {
+        out[key] = next;
+        i++;
+      } else {
+        out[key] = true;
+      }
+    } else {
+      out._.push(a);
+    }
+  }
+  return out;
+}
+
+function cmdStatus() {
+  const ov = core.overview();
+  console.log('지시문 트랙 상태 (canonical id: ' + ov.canonId + ')');
+  console.log('canonical: ' + (ov.canonicalExists ? `있음 (출처: ${ov.source})` : '없음 — 먼저 pull 하세요'));
+  console.log('');
+  console.log('도구     파일         존재   상태');
+  for (const it of ov.items) {
+    let state = '✗ 없음';
+    if (it.exists) {
+      if (!ov.canonicalExists) {
+        state = '· canonical 없음';
+      } else {
+        const d = core.diffFor(it.tool);
+        state = d.hasChanges ? '⚠ drift(다름)' : '✓ 동일';
+      }
+    }
+    console.log(it.tool.padEnd(8) + it.name.padEnd(12) + (it.exists ? '✓' : '✗').padEnd(6) + state);
+  }
+  // T2: 등록 프로젝트의 지시문은 존재 여부만 표시 (pull/push는 글로벌 전용 — 범위 밖)
+  const pj = ov.projectItems || [];
+  if (pj.length) {
+    console.log('\n프로젝트 지시문 (존재만 표시):');
+    const byRoot = new Map();
+    for (const it of pj) {
+      if (!byRoot.has(it.projectRoot)) byRoot.set(it.projectRoot, []);
+      byRoot.get(it.projectRoot).push(it);
+    }
+    for (const [root, items] of byRoot) {
+      console.log('  ' + root);
+      for (const it of items) {
+        console.log('    ' + it.tool.padEnd(8) + it.name.padEnd(20) + (it.exists ? '✓' : '✗'));
+      }
+    }
+  }
+}
+
+function cmdPull(args) {
+  const from = args.from;
+  if (!from) {
+    console.error('사용법: aad pull --from <claude|codex>');
+    process.exit(1);
+  }
+  try {
+    // PI 게이트는 D33으로 제거 — 로컬 전용·본인 열람.
+    const r = core.pull({ from });
+    console.log(`✓ canonical에 가져왔습니다: ${core.CANON_ID} (출처 ${r.meta.source_tool})`);
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
+}
+
+function cmdPush(args) {
+  const to = args.to;
+  if (!to) {
+    console.error('사용법: aad push --to <claude|codex> [--apply]   (기본: 미리보기)');
+    process.exit(1);
+  }
+  try {
+    const r = core.push({ to, apply: !!args.apply });
+    console.log(`대상: ${r.to}  →  ${r.targetPath}`);
+    if (r.losses && r.losses.length) console.log('⚠ 변환 손실: ' + r.losses.join(', '));
+    if (!r.applied) {
+      console.log('--- 미리보기 (diff) ---');
+      console.log(r.hasChanges ? diff.render(r.diff) : '(차이 없음 — 이미 동일)');
+      console.log('-----------------------');
+      console.log('실제 적용하려면 같은 명령에 --apply 를 붙이세요.');
+      return;
+    }
+    console.log('✓ 적용 완료');
+    console.log('  백업: ' + (r.backupPath || '(신규 파일이라 백업 없음)'));
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
+}
+
+// ---------------- agent 트랙 ----------------
+function cmdAgent(rest) {
+  const sub = rest[0];
+  const args = parseArgs(rest.slice(1));
+  if (sub === 'ls') return agentLs();
+  if (sub === 'pull') return agentPullCmd(args);
+  if (sub === 'push') return agentPushCmd(args);
+  console.error('사용법: aad agent <ls|pull|push> ...');
+  process.exit(1);
+}
+
+function agentLs() {
+  const ov = core.agentOverview();
+  console.log('canonical agents:');
+  if (!ov.canonicalAgents.length) console.log('  (없음 — agent pull로 가져오세요)');
+  for (const a of ov.canonicalAgents) {
+    const proj = a.scope === 'project' ? `, scope=project @${a.project_root}` : '';
+    console.log(`  ${a.id}  (name=${a.name}, tools=[${a.tools.join(', ')}], 출처=${a.source_tool}${proj})`);
+  }
+  console.log('\n도구에서 발견된 agent 파일:');
+  if (!ov.toolAgents.length) console.log('  (없음)');
+  for (const t of ov.toolAgents) {
+    const proj = t.scope === 'project' ? `  (project @${t.projectRoot})` : '';
+    console.log(`  ${t.tool}: ${t.name}${proj}`);
+  }
+  if (ov.nonStandard.length) {
+    console.log('\n⚠ 비표준 파일(스킵):');
+    for (const n of ov.nonStandard) console.log(`  ${n.tool}/${n.file} — ${n.reason}`);
+  }
+}
+
+function agentPullCmd(args) {
+  const { from, name } = args;
+  if (!from || !name) {
+    console.error('사용법: aad agent pull --from <도구> --name <agent이름> [--project-root <path>]');
+    process.exit(1);
+  }
+  try {
+    // PI 게이트는 D33으로 제거 — 로컬 전용·본인 열람.
+    const r = core.agentPull({ from, name, projectRoot: args['project-root'] });
+    console.log(`✓ canonical agent 저장: ${r.agent.id} (출처 ${r.agent.source_tool}, tools=[${(r.agent.tools || []).join(', ')}])`);
+    if (r.agent.scope === 'project') console.log(`  scope=project (${r.agent.project_root})`);
+    if (r.agent.source_notes) console.log('  메모: ' + r.agent.source_notes);
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
+}
+
+function agentPushCmd(args) {
+  const { to, name } = args;
+  if (!to || !name) {
+    console.error('사용법: aad agent push --to <도구> --name <agent이름> [--apply]');
+    process.exit(1);
+  }
+  const id = 'agent-' + name;
+  try {
+    const r = core.agentPush({ id, to, apply: !!args.apply });
+    console.log(`대상: ${to}  →  ${r.targetPath}`);
+    if (r.losses && r.losses.length) {
+      console.log('⚠ 변환 손실:');
+      for (const l of r.losses) console.log('   - ' + l);
+    }
+    if (!r.applied) {
+      console.log('--- 미리보기 (diff) ---');
+      console.log(r.hasChanges ? diff.render(r.diff) : '(차이 없음 — 이미 동일)');
+      console.log('-----------------------');
+      console.log('실제 적용하려면 --apply 를 붙이세요.');
+      return;
+    }
+    console.log('✓ 적용 완료. 백업: ' + (r.backupPath || '(신규라 백업 없음)'));
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
+}
+
+// ---------------- skill 트랙 ----------------
+function cmdSkill(rest) {
+  const sub = rest[0];
+  const args = parseArgs(rest.slice(1));
+  if (sub === 'ls') return skillLs();
+  if (sub === 'pull') return skillPullCmd(args);
+  if (sub === 'push') return skillPushCmd(args);
+  console.error('사용법: aad skill <ls|pull|push> ...');
+  process.exit(1);
+}
+
+function skillLs() {
+  const ov = core.skillOverview();
+  console.log('canonical skills:');
+  if (!ov.canonicalSkills.length) console.log('  (없음 — skill pull로 가져오세요)');
+  for (const s of ov.canonicalSkills) {
+    const proj = s.scope === 'project' ? `, scope=project @${s.project_root}` : '';
+    console.log(`  ${s.name}  (출처=${s.source_tool}${s.official === false ? ', ⚠비공식' : ''}${proj})`);
+  }
+  console.log('\n도구에서 발견된 skill:');
+  if (!ov.toolSkills.length) console.log('  (없음)');
+  for (const s of ov.toolSkills) {
+    const tags = [s.shared ? '공유' : null, s.plugin ? '플러그인' : null, s.official === false ? '⚠비공식' : null]
+      .filter(Boolean)
+      .join(',');
+    const proj = s.scope === 'project' ? `  (project @${s.projectRoot})` : '';
+    console.log(`  [${s.source_id}] ${s.name}${tags ? '  (' + tags + ')' : ''}${proj}`);
+  }
+  if (ov.unofficial.length) {
+    console.log('\n⚠ 비공식 위치의 skill (공식 위치로 이동을 제안):');
+    for (const s of ov.unofficial) console.log(`  ${s.name} — ${s.path}`);
+  }
+}
+
+function skillPullCmd(args) {
+  const { name } = args;
+  if (!name) {
+    console.error('사용법: aad skill pull --name <skill이름> [--source-id <소스>] [--project-root <path>]');
+    process.exit(1);
+  }
+  try {
+    // PI 게이트는 D33으로 제거 — 로컬 전용·본인 열람.
+    const r = core.skillPull({ name, source_id: args['source-id'], projectRoot: args['project-root'] });
+    console.log(`✓ canonical skill 저장: ${r.skill.name} (출처 ${r.skill.source_tool})`);
+    if (r.skill.scope === 'project') console.log(`  scope=project (${r.skill.project_root})`);
+    if (r.unofficialSource) console.log('  ⚠ 비공식 위치에서 가져왔습니다. 공식 위치로 동기화(push)를 권장합니다.');
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
+}
+
+function skillPushCmd(args) {
+  const { to, name } = args;
+  if (!to || !name) {
+    console.error('사용법: aad skill push --to <도구> --name <skill이름> [--apply]');
+    process.exit(1);
+  }
+  try {
+    const r = core.skillPush({ name, to, apply: !!args.apply });
+    console.log(`대상: ${to}  →  ${r.targetPath}`);
+    if (!r.applied) {
+      console.log('--- 미리보기 (diff) ---');
+      console.log(r.hasChanges ? diff.render(r.diff) : '(차이 없음 — 이미 동일)');
+      console.log('-----------------------');
+      console.log('실제 적용하려면 --apply 를 붙이세요.');
+      return;
+    }
+    console.log('✓ 적용 완료. 백업: ' + (r.backupPath || '(신규라 백업 없음)'));
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
+}
+
+// ---------------- 한 번에 동기화(Sync) — UX-A ----------------
+// --apply 없으면 plan만 표로 출력(도구별 그룹/특이사항/기준 후보). --apply엔 --base 필수.
+function cmdSync(args) {
+  const kind = args.kind;
+  const name = args.name;
+  // scope: 'global'(기본) 또는 프로젝트 루트 절대경로. 미지정/true면 global.
+  const scope = typeof args.scope === 'string' ? args.scope : undefined;
+  if (!kind || !name || (kind !== 'skill' && kind !== 'agent')) {
+    console.error('사용법: aad sync --kind <skill|agent> --name <이름> [--scope <root|global>] [--base <도구>] [--apply]');
+    process.exit(1);
+  }
+  try {
+    if (!args.apply) {
+      // 미리보기: plan만 표로
+      const p = core.syncPlan({ kind, name, scope });
+      console.log(`sync 계획: ${p.kind} "${p.name}"  (scope: ${p.scope})`);
+      console.log(`canonical: ${p.canonicalExists ? '있음 (그룹 ' + p.canonicalGroup + ')' : '없음'}   서로 다른 내용 버전(그룹): ${p.groups}`);
+      console.log('');
+      console.log('도구      존재   그룹   특이사항');
+      for (const t of p.tools) {
+        const grp = t.group == null ? '-' : String(t.group);
+        console.log(t.tool.padEnd(8) + (t.exists ? '✓' : '✗').padEnd(6) + grp.padEnd(6) + (t.notes && t.notes.length ? t.notes.join(' | ') : ''));
+      }
+      console.log('');
+      console.log('기준 후보(exists): ' + (p.baseCandidates.length ? p.baseCandidates.join(', ') : '(없음)'));
+      if (kind === 'agent') {
+        console.log('\n기준별 변환 손실 요약:');
+        for (const base of p.baseCandidates) {
+          const losses = p.perBaseLosses[base] || {};
+          const parts = Object.entries(losses)
+            .map(([to, ls]) => `${to}: ${ls.length ? ls.join('; ') : '손실 없음'}`)
+            .join('  |  ');
+          console.log(`  [${base} 기준] ${parts || '(다른 도구 없음)'}`);
+        }
+      }
+      console.log('\n실제 적용하려면 --base <도구> --apply 를 붙이세요.');
+      return;
+    }
+    // 적용: --base 필수
+    if (!args.base || args.base === true) {
+      console.error('--apply 에는 --base <도구> 가 필요합니다.');
+      process.exit(1);
+    }
+    const r = core.syncApply({ kind, name, baseTool: args.base, scope, sourceId: args['source-id'] });
+    console.log(`동기화 스코프: ${r.scope}`);
+    console.log(`✓ pull: ${r.pulled.from} → canonical`);
+    if (r.pulled.unofficialSource) console.log('  ⚠ 비공식 위치에서 가져왔습니다.');
+    console.log('push 결과:');
+    for (const x of r.results) {
+      if (x.action === 'pushed') {
+        console.log(`  ${x.tool}: 적용 → ${x.targetPath}` + (x.backup ? `  (백업 ${x.backup})` : '  (신규라 백업 없음)'));
+        for (const l of x.losses || []) console.log('     ⚠ 손실: ' + l);
+      } else if (x.action === 'skipped_same') {
+        console.log(`  ${x.tool}: skip (내용 동일)`);
+      } else if (x.action === 'error') {
+        console.log(`  ${x.tool}: ✗ 오류 — ${x.error}`);
+      }
+    }
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
+}
+
+// ---------------- 지시문 한 방 동기화 (UX v2 — F2) ----------------
+// aad instr sync --base <claude|codex> [--apply]
+// --apply 없으면 기준 모델로 맞출 때의 diff 요약(변경 라인 수·생성 여부)만 출력(디스크 무변경).
+function cmdInstr(rest) {
+  const sub = rest[0];
+  const args = parseArgs(rest.slice(1));
+  if (sub !== 'sync') {
+    console.error('사용법: aad instr sync --base <claude|codex> [--apply]');
+    process.exit(1);
+  }
+  const base = args.base;
+  if (!base || base === true) {
+    console.error('사용법: aad instr sync --base <claude|codex> [--apply]');
+    process.exit(1);
+  }
+  try {
+    // PI 게이트는 D33으로 제거 — 로컬 전용·본인 열람.
+    const r = core.instrSync({ base, apply: !!args.apply });
+    if (!args.apply) {
+      console.log(`지시문 동기화 미리보기 (기준: ${r.base}) — 디스크 무변경`);
+      console.log('대상      존재   변경(+/-)     동작');
+      for (const t of r.targets) {
+        const chg = t.hasChanges ? `+${t.added}/-${t.removed}` : '변경 없음';
+        const action = t.willCreate ? '신규 생성' : t.hasChanges ? '덮어쓰기' : '(동일)';
+        console.log(t.to.padEnd(9) + (t.exists ? '✓' : '✗').padEnd(6) + chg.padEnd(13) + action);
+      }
+      console.log('\n실제 적용하려면 --apply 를 붙이세요 (기준→canonical pull 후 나머지 모델 push, 백업 자동).');
+      return;
+    }
+    // 적용 결과
+    console.log(`✓ pull: ${r.base} → canonical`);
+    console.log('push 결과:');
+    for (const x of r.results) {
+      if (x.applied) {
+        console.log(`  ${x.to}: 적용 → ${x.targetPath}` + (x.backupPath ? `  (백업 ${x.backupPath})` : '  (신규라 백업 없음)'));
+      } else {
+        console.log(`  ${x.to}: ✗ 오류 — ${x.error}`);
+      }
+    }
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
+}
+
+// ---------------- 동기화 매트릭스 (UX-E1) ----------------
+// 행=(경로,이름) × 도구(claude/codex) + 동기화 상태. 첫 실행 시 프로젝트 자동 발견.
+function cmdMatrix(args) {
+  const kind = args.kind;
+  if (!kind || (kind !== 'skill' && kind !== 'agent')) {
+    console.error('사용법: aad matrix --kind <skill|agent>');
+    process.exit(1);
+  }
+  // 간단 용어(D26): drift=불일치, partial=일부 없음, single=단독, synced=동기화됨.
+  const LABEL = { synced: '동기화됨', partial: '일부 없음', drift: '불일치', single: '단독' };
+  const MARK = (slot) => (slot && slot.exists ? (slot.group != null ? String(slot.group) : 'x') : '·');
+  try {
+    const m = core.syncMatrix({ kind });
+    if (m.autoScan.scanned) {
+      console.log(`(자동 발견: 스캔 실행 → 프로젝트 ${m.autoScan.adopted}건 등록)`);
+    }
+    console.log(`동기화 매트릭스 [${m.kind}]  총 ${m.rows.length}행`);
+    console.log('상태 분포: ' + Object.entries(m.counts).map(([k, v]) => `${LABEL[k] || k} ${v}`).join(', '));
+    console.log('');
+    console.log('경로'.padEnd(22) + '이름'.padEnd(22) + 'C'.padEnd(3) + 'X'.padEnd(3) + '동기화');
+    for (const r of m.rows) {
+      const scopeShort = r.scope === 'global' ? '전역(~)' : require('path').basename(r.scope);
+      console.log(
+        scopeShort.padEnd(22) +
+          r.name.padEnd(22) +
+          MARK(r.tools.claude).padEnd(3) +
+          MARK(r.tools.codex).padEnd(3) +
+          (LABEL[r.syncState] || r.syncState) +
+          (r.error ? '  ⚠ ' + r.error : '')
+      );
+    }
+    console.log('\n(C=claude, X=codex. 숫자=내용그룹(같은 숫자=같은 내용), ·=없음)');
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
+}
+
+// ---------------- 프로젝트 스코프 (T2) ----------------
+function cmdProjects(rest) {
+  const sub = rest[0];
+  const args = parseArgs(rest.slice(1));
+  if (!sub || sub === 'ls') return projectsLs();
+  if (sub === 'scan') return projectsScanCmd(args);
+  if (sub === 'add') return projectsAddCmd(args);
+  if (sub === 'rm') return projectsRmCmd(args);
+  if (sub === 'reset') return projectsResetCmd();
+  if (sub === 'prune') return projectsPruneCmd();
+  console.error('사용법: aad projects <ls|scan|add|rm|reset|prune> ...');
+  process.exit(1);
+}
+
+function projectsLs() {
+  const { projects } = core.projectsList();
+  if (!projects.length) return console.log('(등록된 프로젝트 없음 — aad projects scan 또는 add로 등록)');
+  console.log(`등록된 프로젝트 ${projects.length}건:`);
+  for (const p of projects) {
+    console.log(`  ${p.root}${p.exists === false ? '  [없음 — 경로 미존재]' : ''}`);
+    console.log(`    마커: ${(p.markers || []).join(', ')}  (등록: ${p.source}, ${p.added_at})`);
+  }
+}
+
+function projectsScanCmd(args) {
+  try {
+    const r = core.projectsScan({ root: typeof args.root === 'string' ? args.root : undefined });
+    console.log(`스캔 루트: ${r.root}`);
+    if (!r.candidates.length) return console.log('(후보 없음)');
+    console.log(`후보 ${r.candidates.length}건:`);
+    for (const c of r.candidates) {
+      console.log(`  ${c.registered ? '✓(등록됨)' : '·(미등록)'} ${c.root}  [${(c.markers || []).join(', ')}]`);
+    }
+    if (args.adopt) {
+      const a = core.projectsAdopt({ candidates: r.candidates });
+      console.log(`\n✓ 채택: 신규 ${a.adopted}건 등록 (총 ${a.total}건)`);
+    } else {
+      console.log('\n등록하려면 --adopt 를 붙이거나 aad projects add --root <path> 를 쓰세요. (스캔만으로는 등록되지 않음)');
+    }
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
+}
+
+function projectsAddCmd(args) {
+  if (!args.root || args.root === true) {
+    console.error('사용법: aad projects add --root <path>');
+    process.exit(1);
+  }
+  try {
+    const r = core.projectsAdd({ root: args.root });
+    if (!r.added) return console.log(`이미 등록된 프로젝트입니다: ${r.root}`);
+    console.log(`✓ 등록: ${r.project.root}  [${r.project.markers.join(', ')}]`);
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
+}
+
+function projectsRmCmd(args) {
+  if (!args.root || args.root === true) {
+    console.error('사용법: aad projects rm --root <path>');
+    process.exit(1);
+  }
+  const r = core.projectsRemove({ root: args.root });
+  console.log(r.removed ? `✓ 등록 해제: ${r.root}` : `등록돼 있지 않습니다: ${r.root}`);
+}
+
+function projectsResetCmd() {
+  try {
+    const r = core.projectsReset();
+    console.log(`✓ 레지스트리 초기화 완료 — 재스캔 후 ${r.adopted}건 재등록`);
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
+}
+
+// 디스크에서 사라진(root 미존재) 프로젝트만 레지스트리에서 정리한다.
+function projectsPruneCmd() {
+  try {
+    const r = core.projectsPrune();
+    if (!r.removed.length) return console.log('정리할 프로젝트가 없습니다 (모든 경로 존재).');
+    console.log(`✓ 없는 프로젝트 ${r.removed.length}건 정리 (남은 ${r.remaining}건):`);
+    for (const root of r.removed) console.log(`  - ${root}`);
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
+}
+
+// ---------------- 백업 목록 / 복구 (UX-D1) ----------------
+// 적용(push) 시 덮어쓰기 전에 남긴 백업을 보고, 원위치로 되돌린다.
+function cmdBackups(rest) {
+  const sub = rest[0];
+  const args = parseArgs(rest.slice(1));
+  if (!sub || sub === 'ls') return backupsLs();
+  if (sub === 'restore') return backupsRestoreCmd(args);
+  console.error('사용법: aad backups <ls|restore> ...');
+  process.exit(1);
+}
+
+function backupsLs() {
+  const { backups } = core.backupsList();
+  if (!backups.length) return console.log('(백업 없음 — 적용(push)하면 덮어쓰기 전에 백업이 생깁니다)');
+  console.log(`백업 ${backups.length}건 (최신순):`);
+  for (const b of backups) {
+    console.log(`  ${b.timestamp}`);
+    for (const e of b.entries) {
+      const where = e.targetPath ? `→ ${e.targetPath}` : '→ (원위치 정보 없음 — 복구 불가)';
+      const info = [e.tool, e.kind, e.item].filter(Boolean).join('/');
+      console.log(`    ${e.file}${info ? '  [' + info + ']' : ''}  ${where}`);
+      console.log(`      복구 명령: aad backups restore --path "${e.backupFilePath}"`);
+    }
+  }
+}
+
+function backupsRestoreCmd(args) {
+  if (!args.path || args.path === true) {
+    console.error('사용법: aad backups restore --path <백업파일경로>');
+    process.exit(1);
+  }
+  try {
+    const r = core.backupRestore({ path: args.path });
+    console.log(`✓ 복구 완료 → ${r.targetPath}`);
+    console.log('  복구 전 현재 파일 백업: ' + (r.preRestoreBackup || '(대상 파일이 없어 백업 없음)'));
+  } catch (e) {
+    console.error('복구 실패: ' + e.message);
+    process.exit(1);
+  }
+}
+
+// ---------------- Phase 2: 사용량 + 자기 점검 ----------------
+function cmdUsage() {
+  const u = core.usage();
+  console.log(`사용량 (기준 ${u.now}) — LRU(오래 안 쓴 순)`);
+  console.log('상태      churn  최근활동                   pin id');
+  for (const x of u.items) {
+    console.log(
+      x.state.padEnd(10) +
+        String(x.telemetry.churn_count).padEnd(7) +
+        (x.lastActivity || '-').padEnd(27) +
+        (x.telemetry.pinned ? '📌  ' : '    ') +
+        x.id
+    );
+  }
+}
+
+function cmdReview(args) {
+  const r = core.review({ dryRun: !!args['dry-run'] });
+  const rep = r.report;
+  console.log(`review ${r.dryRun ? '(dry-run, staging 없음)' : '(제안 staging됨)'} — 기준 ${rep.ran_at}`);
+  console.log('상태 분포: ' + JSON.stringify(rep.states));
+  console.log(`제안 ${rep.counts.proposals}개:`);
+  for (const p of rep.proposals) console.log(`  [${p.id}] (${p.kind}) ${p.title}`);
+  if (!r.dryRun && rep.counts.proposals) {
+    console.log('→ 승인: aad approve --id <id>  /  거절: aad reject --id <id>  /  목록: aad pending');
+  }
+}
+
+function cmdPending() {
+  const ps = core.pending();
+  if (!ps.length) return console.log('대기 중인 제안 없음. (aad review 로 생성)');
+  for (const p of ps) console.log(`[${p.id}] (${p.kind}) ${p.title}\n   ${p.detail}`);
+}
+
+// --id 가 필요한 명령 공통 처리
+function withId(args, fn, okMsg) {
+  if (!args.id) {
+    console.error('이 명령은 --id <id> 가 필요합니다.');
+    process.exit(1);
+  }
+  try {
+    const r = fn(args.id);
+    console.log(typeof okMsg === 'function' ? okMsg(r) : okMsg);
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
+}
+
+// ---------------- 태그 ----------------
+function cmdTags(rest) {
+  const sub = rest[0];
+  const args = parseArgs(rest.slice(1));
+  if (!sub || sub === 'ls') {
+    const all = core.tagSuggestions().all || [];
+    console.log(all.length ? all.join(', ') : '(태그 없음)');
+    return;
+  }
+  if (sub === 'set') {
+    const { kind, id, tags } = args;
+    if (!kind || !id || tags === undefined) {
+      console.error('사용법: aad tags set --kind <skill|agent|instruction> --id <id> --tags a,b');
+      process.exit(1);
+    }
+    const r = core.setItemTags({ kind, id, tags });
+    console.log(`✓ 태그 설정: ${r.kind} ${r.id} → [${(r.tags || []).join(', ')}]`);
+    return;
+  }
+  console.error('사용법: aad tags <ls|set> ...');
+  process.exit(1);
+}
+
+// ---------------- Store(카탈로그) ----------------
+function cmdStore(rest) {
+  const sub = rest[0];
+  const args = parseArgs(rest.slice(1));
+  if (sub === 'ls') return storeLs(args);
+  if (sub === 'show') return storeShow(args);
+  if (sub === 'preview') return storePreview(args);
+  if (sub === 'apply') return storeApply(args);
+  console.error('사용법: aad store <ls|show|preview|apply> ...');
+  process.exit(1);
+}
+
+function storeLs(args) {
+  const d = core.storeList(args.q);
+  const items = d.items || [];
+  if (!items.length) return console.log('(카탈로그 비어 있음)');
+  console.log('id'.padEnd(24) + 'kind'.padEnd(8) + 'name'.padEnd(28) + '태그');
+  for (const it of items) {
+    console.log(
+      it.id.padEnd(24) +
+        it.kind.padEnd(8) +
+        it.name.padEnd(28) +
+        (it.tags || []).join(',')
+    );
+  }
+}
+
+function storeShow(args) {
+  if (!args.id) {
+    console.error('사용법: aad store show --id <id>');
+    process.exit(1);
+  }
+  const it = core.storeItem(args.id);
+  if (!it) return console.log('해당 id의 항목이 없습니다: ' + args.id);
+  console.log(`[${it.kind}] ${it.name}  (id=${it.id}${it.official ? ', 공식' : ''})`);
+  if (it.description) console.log(it.description);
+  if (it.kind === 'skill' && it.body) {
+    console.log('\n--- body (앞부분) ---');
+    console.log(it.body.split('\n').slice(0, 20).join('\n'));
+  } else if (it.kind === 'agent' && it.neutral) {
+    console.log('\n--- neutral 요약 ---');
+    console.log(JSON.stringify(it.neutral, null, 2));
+  }
+  if (it.transform_notes && it.transform_notes.length) {
+    console.log('\n⚠ 변환 메모:');
+    for (const n of it.transform_notes) console.log('  - ' + n);
+  }
+}
+
+function storePreview(args) {
+  if (!args.id) {
+    console.error('사용법: aad store preview --id <id>');
+    process.exit(1);
+  }
+  const p = core.storePreview(args.id);
+  if (!p) return console.log('해당 id의 항목이 없습니다: ' + args.id);
+  console.log(`미리보기: ${p.kind} ${p.name || p.id}${p.exists ? ' (이미 존재)' : ''}`);
+  for (const pt of p.perTool || []) {
+    console.log(`\n→ ${pt.to}  (${pt.targetPath || ''})`);
+    console.log(pt.diffText || '(차이 없음)');
+    if (pt.losses && pt.losses.length) {
+      console.log('⚠ 손실:');
+      for (const l of pt.losses) console.log('   - ' + l);
+    }
+  }
+}
+
+function storeApply(args) {
+  if (!args.id) {
+    console.error('사용법: aad store apply --id <id> [--resolution skip|overwrite|rename] [--name X]');
+    process.exit(1);
+  }
+  let r;
+  try {
+    // PI 게이트는 D33으로 제거 — 로컬 전용·본인 열람.
+    r = core.storeApply({ id: args.id, resolution: args.resolution, newName: args.name });
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
+  if (r.conflict) {
+    console.log(`충돌: ${r.kind} "${r.name || r.id}" 가 이미 있습니다.`);
+    console.log('  --resolution ' + r.options.join(' | ') + ' 로 다시 실행하세요 (rename은 --name 도).');
+    return;
+  }
+  if (r.skipped) {
+    console.log(`건너뜀: ${r.kind} "${r.name || r.id}".`);
+    return;
+  }
+  console.log(`✓ 적용: ${r.kind} "${r.name || r.id}"`);
+  for (const x of r.results || []) {
+    console.log(`  ${x.to}: ${x.applied ? '적용' : '미적용'} → ${x.targetPath || ''}` + (x.backupPath ? `  (백업 ${x.backupPath})` : ''));
+    if (x.losses && x.losses.length) {
+      for (const l of x.losses) console.log('     ⚠ 손실: ' + l);
+    }
+  }
+}
+
+// ---------------- 원격 레지스트리 (스토어-R1) ----------------
+// 외부 통신(refresh/updates)은 사용자 트리거 명령에서만 실행된다(자동 폴링 없음).
+function cmdRegistry(rest) {
+  const sub = rest[0];
+  const args = parseArgs(rest.slice(1));
+  if (!sub || sub === 'ls') return registryLs();
+  if (sub === 'add') return registryAddCmd(args);
+  if (sub === 'rm') return registryRmCmd(args);
+  if (sub === 'refresh') return registryRefreshCmd(args);
+  if (sub === 'updates') return registryUpdatesCmd();
+  console.error('사용법: aad registry <ls|add|rm|refresh|updates> ...');
+  process.exit(1);
+}
+
+function registryLs() {
+  const { registries } = core.registryList();
+  if (!registries.length) return console.log('(등록된 레지스트리 없음 — aad registry add --url <URL>)');
+  console.log(`등록된 레지스트리 ${registries.length}건:`);
+  for (const r of registries) {
+    console.log(`  [${r.id}] ${r.name}`);
+    console.log(`     url=${r.url}`);
+    console.log(`     revision=${r.revision || '(미갱신)'}  last_refreshed=${r.last_refreshed || '-'}`);
+  }
+}
+
+function registryAddCmd(args) {
+  if (!args.url || args.url === true) {
+    console.error('사용법: aad registry add --url <URL> [--name <이름>]');
+    process.exit(1);
+  }
+  try {
+    const r = core.registryAdd({ url: args.url, name: typeof args.name === 'string' ? args.name : undefined });
+    if (!r.added) return console.log(`이미 등록된 레지스트리입니다: ${r.id}`);
+    console.log(`✓ 등록: [${r.registry.id}] ${r.registry.name}  (${r.registry.url})`);
+    console.log('  (등록만 완료 — 항목을 가져오려면 aad registry refresh --id ' + r.registry.id + ')');
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
+}
+
+function registryRmCmd(args) {
+  if (!args.id || args.id === true) {
+    console.error('사용법: aad registry rm --id <id>');
+    process.exit(1);
+  }
+  const r = core.registryRemove({ id: args.id });
+  if (r.removed) console.log(`✓ 등록 해제: ${r.id}`);
+  else if (r.reason === 'default') console.log(`기본 레지스트리는 제거할 수 없습니다: ${r.id}`);
+  else console.log(`등록돼 있지 않습니다: ${r.id}`);
+}
+
+async function registryRefreshCmd(args) {
+  if (!args.id || args.id === true) {
+    console.error('사용법: aad registry refresh --id <id>');
+    process.exit(1);
+  }
+  try {
+    const r = await core.registryRefresh({ id: args.id });
+    console.log(`✓ refresh: [${r.id}] ${r.source_ref}`);
+    console.log(`  revision=${r.revision || '(없음)'}  스킬 ${r.count}개 → ${r.cacheFile}`);
+  } catch (e) {
+    console.error('새로고침 실패: ' + e.message);
+    process.exit(1);
+  }
+}
+
+async function registryUpdatesCmd() {
+  try {
+    const results = await core.registryCheckUpdates();
+    if (!results.length) return console.log('(등록된 레지스트리 없음)');
+    console.log('업데이트 확인 (git ls-remote HEAD):');
+    for (const r of results) {
+      if (r.error) {
+        console.log(`  [${r.id}] ✗ 확인 실패 — ${r.error}`);
+      } else {
+        console.log(`  [${r.id}] ${r.update_available ? '⬆ 업데이트 있음' : '✓ 최신'}  (local=${(r.local_revision || '-').slice(0, 12)}, remote=${(r.remote_revision || '-').slice(0, 12)})`);
+      }
+    }
+  } catch (e) {
+    console.error(e.message);
+    process.exit(1);
+  }
+}
+
+// ---------------- Playground (추천 → 미리보기 → 적용) ----------------
+function cmdPg(rest) {
+  const sub = rest[0];
+  if (sub === 'wizard') return pgWizard();
+  if (sub === 'skill') return pgSkill(rest.slice(1));
+  if (sub === 'agent') return pgAgent(rest.slice(1));
+  console.error('사용법: aad pg <wizard|skill|agent> ...');
+  process.exit(1);
+}
+
+function pgWizard() {
+  const qs = core.pgSkillWizard();
+  for (const q of qs) {
+    console.log(`[${q.id}] ${q.label} (${q.type})`);
+    for (const o of q.options || []) {
+      console.log(`   - ${o.value}: ${o.label}${o.tags && o.tags.length ? '  (#' + o.tags.join(' #') + ')' : ''}`);
+    }
+  }
+}
+
+// 추천 결과 공통 출력(이름/점수/이유)
+function pgPrintRecs(recs) {
+  if (!recs.length) return console.log('(추천 결과 없음)');
+  for (const s of recs) {
+    console.log(`  ${s.id}  (name=${s.name}, score=${s.score})`);
+    for (const r of s.reasons || []) console.log('     · ' + r);
+  }
+}
+
+// 미리보기(perTool diffText + 손실) 공통 출력
+function pgPrintPreview(prev) {
+  console.log(`미리보기: ${prev.kind} ${prev.name || prev.id || ''}${prev.exists ? ' (이미 존재)' : ''}`);
+  for (const pt of prev.perTool || []) {
+    console.log(`\n→ ${pt.to}  (${pt.targetPath || ''})`);
+    console.log(pt.diffText || '(차이 없음)');
+    if (pt.losses && pt.losses.length) {
+      console.log('⚠ 손실:');
+      for (const l of pt.losses) console.log('   - ' + l);
+    }
+  }
+}
+
+// 적용 결과/충돌 공통 출력 (스킬/에이전트 공유)
+function pgPrintAdopt(r) {
+  if (r.conflict) {
+    console.log(`충돌: ${r.kind} "${r.name || r.id}" 가 이미 있습니다.`);
+    console.log('  --resolution ' + r.options.join(' | ') + ' 로 다시 실행하세요 (rename은 --name 도).');
+    return;
+  }
+  if (r.skipped) return console.log(`건너뜀: ${r.kind} "${r.name || r.id}".`);
+  console.log(`✓ 적용: ${r.kind} "${r.name || r.id}"`);
+  for (const x of r.results || []) {
+    console.log(`  ${x.to}: ${x.applied ? '적용' : '미적용'} → ${x.targetPath || ''}` + (x.backupPath ? `  (백업 ${x.backupPath})` : ''));
+    for (const l of x.losses || []) console.log('     ⚠ 손실: ' + l);
+  }
+}
+
+function pgSkill(rest) {
+  const sub = rest[0];
+  const args = parseArgs(rest.slice(1));
+  if (sub === 'reco') {
+    const tags = args.tags ? String(args.tags).split(',').map((s) => s.trim()).filter(Boolean) : [];
+    return pgPrintRecs(core.pgRecommendSkills({ tags, text: args.text || '' }));
+  }
+  if (sub === 'preview') {
+    if (!args.id) {
+      console.error('사용법: aad pg skill preview --id <id>');
+      process.exit(1);
+    }
+    return pgPrintPreview(core.pgPreviewSkill(args.id));
+  }
+  if (sub === 'adopt') {
+    if (!args.id) {
+      console.error('사용법: aad pg skill adopt --id <id> [--resolution skip|overwrite|rename] [--name X]');
+      process.exit(1);
+    }
+    return pgPrintAdopt(core.pgAdoptSkill({ id: args.id, resolution: args.resolution, newName: args.name }));
+  }
+  console.error('사용법: aad pg skill <reco|preview|adopt> ...');
+  process.exit(1);
+}
+
+function pgAgent(rest) {
+  const sub = rest[0];
+  const args = parseArgs(rest.slice(1));
+  if (sub !== 'compose' && sub !== 'adopt') {
+    console.error('사용법: aad pg agent <compose|adopt> --role "..." --pick id1,id2 [--name X]');
+    process.exit(1);
+  }
+  if (!args.role) {
+    console.error('이 명령은 --role "..." 가 필요합니다.');
+    process.exit(1);
+  }
+  const pickedIds = args.pick ? String(args.pick).split(',').map((s) => s.trim()).filter(Boolean) : [];
+  const neutral = core.pgComposeAgent({ roleText: args.role, pickedIds, name: args.name });
+  if (sub === 'compose') {
+    // 조합 중립 스키마 + 바로 미리보기(perTool 손실)
+    console.log('--- 조합된 중립 스키마 ---');
+    console.log(JSON.stringify(neutral, null, 2));
+    console.log('\n--- 미리보기 ---');
+    return pgPrintPreview(core.pgPreviewAgent(neutral));
+  }
+  // adopt: compose 후 바로 적용
+  return pgPrintAdopt(core.pgAdoptAgent({ neutral, resolution: args.resolution, newName: args.name }));
+}
+
+function cmdServe(args) {
+  require('../server/serve').start({ port: args.port ? Number(args.port) : undefined });
+}
+
+function help() {
+  console.log(`aad — AI-Agent Dashboard CLI (지시문 슬라이스)
+
+명령:
+  aad status                                  세 도구의 지시문 존재/drift 요약
+  aad pull --from <claude|codex>              해당 도구의 지시문을 canonical로 가져오기
+  aad push --to <claude|codex>                canonical을 해당 도구로 미리보기(diff)
+            [--apply]                           --apply가 있어야 실제 쓰기(백업 후)
+  aad agent ls                                canonical/도구의 agent 목록(프로젝트 scope 표시)
+  aad agent pull --from <도구> --name <이름>   도구의 agent를 canonical(중립 스키마)로
+            [--project-root <path>]             (등록된 프로젝트의 agent를 가져올 때)
+  aad agent push --to <도구> --name <이름>     canonical agent를 해당 도구로 미리보기(diff+손실)
+            [--apply]                           --apply가 있어야 실제 쓰기(백업 후)
+  aad skill ls                                canonical/도구의 skill 목록(비공식·프로젝트 scope 표시)
+  aad skill pull --name <이름> [--source-id <소스>]   skill을 canonical로 가져오기
+            [--project-root <path>]             (등록된 프로젝트의 skill을 가져올 때)
+  aad skill push --to <도구> --name <이름>     canonical skill을 해당 도구로 미리보기(diff)
+            [--apply]                           --apply가 있어야 실제 쓰기(백업 후)
+  --- 한 번에 동기화(Sync) ---
+  aad sync --kind <skill|agent> --name <이름>   도구별 그룹/특이사항/기준 후보 미리보기(계획)
+            [--scope <root|global>]             동기화 스코프(기본 global=전역 ~, 또는 등록 프로젝트 루트)
+            [--base <도구>] [--apply]           --apply(+--base)면 기준→canonical pull + 나머지 도구 push
+            [--source-id <소스>]                (skill 기준 소스 지정 — 기본: 스코프별 공식 위치)
+  --- 지시문 한 방 동기화 (UX v2) ---
+  aad instr sync --base <claude|codex>         전역 지시문 2파일을 기준 모델로 동기화
+            [--apply]                           --apply 없으면 diff 요약만(디스크 무변경).
+                                                --apply면 기준→canonical pull 후 나머지 모델 push(백업 자동)
+  --- 동기화 매트릭스 (UX-E1) ---
+  aad matrix --kind <skill|agent>             경로×이름 행, 도구별 존재/내용그룹 + 동기화 상태
+                                              (첫 실행 시 프로젝트 자동 발견)
+  --- 프로젝트 스코프 ---
+  aad projects ls                             등록된 프로젝트 목록
+  aad projects scan [--root <path>] [--adopt]  프로젝트 후보 스캔(기본: 보기만, --adopt로 등록 병합)
+  aad projects add --root <path>              프로젝트 수동 등록
+  aad projects rm --root <path>               프로젝트 등록 해제
+  aad projects reset                          레지스트리 비우고 기본 루트 재스캔 → 후보 전체 재등록
+  --- 백업 / 복구 ---
+  aad backups [ls]                            적용 전에 남긴 백업 목록(최신순, 원위치 표시)
+  aad backups restore --path <백업파일>        그 백업을 원래 자리로 되돌리기(되돌리기 전 현재 파일도 백업)
+  --- 태그 + Store(카탈로그) ---
+  aad tags [ls]                               태그 프리셋/커스텀 전체 목록
+  aad tags set --kind <skill|agent|instruction> --id <id> --tags a,b   항목 태그 지정
+  aad store ls [--q <검색>]                    카탈로그 항목(id/kind/name/태그) 목록
+  aad store show --id <id>                    항목 상세(description + body/neutral + 변환 메모)
+  aad store preview --id <id>                 도구별 diff(접기 텍스트) + 변환 손실 미리보기
+  aad store apply --id <id>                   모든 도구에 적용(충돌 시 안내)
+            [--resolution skip|overwrite|rename] [--name X]
+  --- 원격 레지스트리 (스토어-R1, 토큰 불필요 git clone) ---
+  aad registry ls                             등록된 레지스트리 목록(revision/갱신시각)
+  aad registry add --url <URL> [--name <이름>]  레지스트리 등록만(통신 안 함)
+  aad registry rm --id <id>                   레지스트리 등록 해제(캐시도 정리)
+  aad registry refresh --id <id>              clone→SKILL.md 파싱→캐시 저장(스토어에 병합)
+  aad registry updates                        git ls-remote HEAD로 업데이트 유무 확인
+  --- Playground (추천 → 미리보기 → 적용) ---
+  aad pg wizard                               스킬 찾기 질문 세트 출력
+  aad pg skill reco [--tags a,b] [--text "..."]   조건으로 스킬 추천(이름/점수/이유)
+  aad pg skill preview --id <id>              스킬을 도구별로 미리보기(diff + 손실)
+  aad pg skill adopt --id <id>                스킬 적용(canonical 저장 + 3도구 push)
+            [--resolution skip|overwrite|rename] [--name X]
+  aad pg agent compose --role "..." --pick id1,id2 [--name X]   스킬을 에이전트로 조합 + 미리보기
+  aad pg agent adopt --role "..." --pick id1,id2 [--name X]     조합 후 바로 적용
+            [--resolution skip|overwrite|rename]
+  --- Phase 2: 사용량 + 자기 점검 ---
+  aad usage                                   항목별 사용량(A 신호)·상태·LRU
+  aad review [--dry-run]                      재계산→노후화→중복/churn 제안(+리포트). dry-run은 staging 없음
+  aad pending                                 대기 중인 제안 목록
+  aad approve --id <id>                       제안 승인(archive는 실제 이동)
+  aad reject --id <id>                        제안 거절
+  aad pin --id <id> / unpin --id <id>         자동 노후화에서 제외/해제
+  aad archive --id <id> / restore --id <id>   아카이브 이동(복구 가능)/복구
+  --- 서버 ---
+  aad serve [--port 4319]                     127.0.0.1 대시보드 서버 실행
+  aad help                                    이 도움말
+`);
+}
+
+function main() {
+  const argv = process.argv.slice(2);
+  const cmd = argv[0];
+  const args = parseArgs(argv.slice(1));
+  switch (cmd) {
+    case 'status':
+      return cmdStatus();
+    case 'pull':
+      return cmdPull(args);
+    case 'push':
+      return cmdPush(args);
+    case 'agent':
+      return cmdAgent(argv.slice(1));
+    case 'skill':
+      return cmdSkill(argv.slice(1));
+    case 'sync':
+      return cmdSync(args);
+    case 'instr':
+      return cmdInstr(argv.slice(1));
+    case 'matrix':
+      return cmdMatrix(args);
+    case 'projects':
+      return cmdProjects(argv.slice(1));
+    case 'backups':
+      return cmdBackups(argv.slice(1));
+    case 'tags':
+      return cmdTags(argv.slice(1));
+    case 'store':
+      return cmdStore(argv.slice(1));
+    case 'registry':
+      return cmdRegistry(argv.slice(1));
+    case 'pg':
+      return cmdPg(argv.slice(1));
+    case 'usage':
+      return cmdUsage();
+    case 'review':
+      return cmdReview(args);
+    case 'pending':
+      return cmdPending();
+    case 'approve':
+      return withId(args, core.approveProposal, (p) => `✓ 승인: ${p.id} (${p.kind})`);
+    case 'reject':
+      return withId(args, core.rejectProposal, (p) => `거절: ${p.id}`);
+    case 'pin':
+      return withId(args, core.pin, '📌 pin 완료');
+    case 'unpin':
+      return withId(args, core.unpin, 'unpin 완료');
+    case 'archive':
+      return withId(args, core.archiveItem, '아카이브로 이동(복구 가능)');
+    case 'restore':
+      return withId(args, core.restoreItem, (r) => `복구: ${r.restored}`);
+    case 'serve':
+      return cmdServe(args);
+    case 'help':
+    case undefined:
+      return help();
+    default:
+      console.error('알 수 없는 명령: ' + cmd);
+      help();
+      process.exit(1);
+  }
+}
+
+main();
