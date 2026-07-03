@@ -13,16 +13,11 @@
 - **모듈 구조·데이터 모델:** [`docs/architecture/structure.md`](docs/architecture/structure.md)
 - **기술 선택과 근거:** [`docs/architecture/tech-stack.md`](docs/architecture/tech-stack.md)
 
----
 
 ## 실행 방법
 
-### 방법 1 — Claude Code 플러그인 (권장)
-
-이 repo는 그 자체로 Claude Code 플러그인이다. Claude Code에서:
-
-```
-/plugin marketplace add <owner>/<repo>   # git 배포 시 (로컬은 repo 경로)
+```bash
+/plugin marketplace add yechan-9208/agent-dashboard
 /plugin install aad@aad
 /aad:serve                               # 서버 실행 + 브라우저 자동 열기 (최초 실행 시 의존성 자동 설치)
 /aad:stop                                # 서버 종료
